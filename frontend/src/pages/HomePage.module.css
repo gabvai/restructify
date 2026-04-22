@@ -1,0 +1,27 @@
+.grid {
+  margin-top: var(--space-5);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+}
+
+.card {
+  display: block;
+  padding: var(--space-5);
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.card:hover {
+  text-decoration: none;
+  border-color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.card h3 {
+  margin: 0 0 var(--space-2) 0;
+  font-size: 16px;
+}
