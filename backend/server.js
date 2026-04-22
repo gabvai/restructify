@@ -4,6 +4,9 @@ const express = require("express");
 const cors = require("cors");
 
 const healthRoutes = require("./routes/healthRoutes");
+const authRoutes = require("./routes/authRoutes");
+const beamRoutes = require("./routes/beamRoutes");
+const constructionReviewRoutes = require("./routes/constructionReviewRoutes");
 const { notFound } = require("./middleware/notFound");
 const { errorHandler } = require("./middleware/errorHandler");
 const { testDbConnection } = require("./db");
@@ -15,6 +18,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/", healthRoutes);
+app.use("/auth", authRoutes);
+app.use("/beams", beamRoutes);
+app.use("/constructions", constructionReviewRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
