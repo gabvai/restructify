@@ -1,0 +1,104 @@
+.container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  position: relative;
+  background: #ffffff;
+  border: none;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 20px rgba(31, 41, 55, 0.08);
+}
+
+.card:hover {
+  transform: none;
+  box-shadow: 0 12px 24px rgba(31, 41, 55, 0.12);
+}
+
+.card:focus-visible {
+  outline: 2px solid #2e7d32;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.15);
+}
+
+.selected {
+  background: #f1f8f4;
+  box-shadow: 0 12px 24px rgba(46, 125, 50, 0.16);
+}
+
+.check {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #2e7d32;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.imageWrap {
+  min-height: 168px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+}
+
+.image {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  object-fit: contain;
+}
+
+.placeholder {
+  width: 132px;
+  height: 132px;
+  border-radius: 16px;
+  border: none;
+  background: #f8fafc;
+  display: grid;
+  place-items: center;
+  color: #2e7d32;
+}
+
+.placeholder span {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.description {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #6b7280;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

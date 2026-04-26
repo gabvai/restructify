@@ -25,13 +25,8 @@
   overflow: hidden;
   padding: clamp(20px, 3.4vw, 36px);
   border-radius: 16px;
-  border: 1px solid #d8e6d8;
-  background: linear-gradient(130deg, #f9fcf8 0%, #eef7ef 58%, #e9f3ea 100%);
-  box-shadow: 0 16px 34px rgba(46, 125, 50, 0.12);
-  transform: perspective(1200px)
-    rotateX(calc((var(--pointer-y) - 50) * 0.05deg))
-    rotateY(calc((50 - var(--pointer-x)) * 0.05deg));
-  transition: transform 260ms ease;
+  border: 1px solid #ffffff;
+  background: white;
 }
 
 .heroText {
@@ -51,7 +46,6 @@
   height: 240px;
   top: -120px;
   right: -20px;
-  background: radial-gradient(circle, rgba(102, 187, 106, 0.25) 0%, rgba(102, 187, 106, 0) 72%);
   animation: floatOrb 11s ease-in-out infinite;
 }
 
