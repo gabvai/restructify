@@ -8,6 +8,7 @@ const t = translations.nav;
 
 const navItems = [
   { to: "/", label: t.home, end: true },
+  { to: "/education", label: t.education },
   { to: "/beams/new", label: t.createBeam },
   { to: "/beams", label: t.myListings }
 ];

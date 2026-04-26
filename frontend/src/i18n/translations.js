@@ -2,6 +2,7 @@ export const translations = {
   nav: {
     brand: "ReStructify",
     home: "Pagrindinis",
+    education: "Edukacija",
     createBeam: "Sukurti siją",
     myListings: "Mano skelbimai",
     logOut: "Atsijungti"
@@ -33,7 +34,7 @@ export const translations = {
   },
   createBeam: {
     title: "Sukurti siją",
-    subtitle: "Užpildykite sijos duomenis ir pateikite.",
+    subtitle: "Užpildykite parduodamos konstrukcijos duomenis.",
     success: "Sija sėkmingai sukurta.",
     cancel: "Atšaukti",
     saving: "Saugoma...",
