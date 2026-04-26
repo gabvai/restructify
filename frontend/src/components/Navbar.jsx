@@ -1,12 +1,15 @@
 import { NavLink, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext.jsx";
+import { translations } from "../i18n/translations.js";
 import styles from "./Navbar.module.css";
 
+const t = translations.nav;
+
 const navItems = [
-  { to: "/", label: "Home", end: true },
-  { to: "/beams/new", label: "Create Beam" },
-  { to: "/beams", label: "My Listings" }
+  { to: "/", label: t.home, end: true },
+  { to: "/beams/new", label: t.createBeam },
+  { to: "/beams", label: t.myListings }
 ];
 
 const Navbar = () => {
@@ -25,7 +28,7 @@ const Navbar = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.inner}>
-        <div className={styles.brand}>Restructify</div>
+        <div className={styles.brand}>{t.brand}</div>
 
         <ul className={styles.links}>
           {navItems.map((item) => (
@@ -48,7 +51,7 @@ const Navbar = () => {
         <div className={styles.userArea}>
           {user?.email && <span className={styles.userEmail}>{user.email}</span>}
           <button type="button" className={styles.logoutButton} onClick={handleLogout}>
-            Log out
+            {t.logOut}
           </button>
         </div>
       </div>

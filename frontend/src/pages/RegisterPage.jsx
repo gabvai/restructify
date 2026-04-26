@@ -5,6 +5,7 @@ import Button from "../components/Button.jsx";
 import FormField from "../components/FormField.jsx";
 import Input from "../components/Input.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import { translations } from "../i18n/translations.js";
 import styles from "./AuthPage.module.css";
 
 const initialForm = {
@@ -15,6 +16,7 @@ const initialForm = {
 };
 
 const RegisterPage = () => {
+  const t = translations.auth.register;
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -50,11 +52,11 @@ const RegisterPage = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.card}>
-        <h1>Create account</h1>
-        <p className="muted">Register to start creating beam listings.</p>
+        <h1>{t.title}</h1>
+        <p className="muted">{t.subtitle}</p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
-          <FormField label="Name" htmlFor="name">
+          <FormField label={t.name} htmlFor="name">
             <Input
               id="name"
               name="name"
@@ -65,7 +67,7 @@ const RegisterPage = () => {
             />
           </FormField>
 
-          <FormField label="Email" htmlFor="email">
+          <FormField label={t.email} htmlFor="email">
             <Input
               id="email"
               name="email"
@@ -77,7 +79,7 @@ const RegisterPage = () => {
             />
           </FormField>
 
-          <FormField label="Password" htmlFor="password">
+          <FormField label={t.password} htmlFor="password">
             <Input
               id="password"
               name="password"
@@ -89,7 +91,7 @@ const RegisterPage = () => {
             />
           </FormField>
 
-          <FormField label="Phone" htmlFor="phone" hint="Optional">
+          <FormField label={t.phone} htmlFor="phone" hint={t.optional}>
             <Input
               id="phone"
               name="phone"
@@ -102,12 +104,12 @@ const RegisterPage = () => {
           {error && <div className={styles.error}>{error}</div>}
 
           <Button type="submit" fullWidth disabled={submitting}>
-            {submitting ? "Creating account..." : "Create account"}
+            {submitting ? t.submitting : t.submit}
           </Button>
         </form>
 
         <p className={styles.footer}>
-          Already registered? <Link to="/login">Log in</Link>
+          {t.alreadyRegistered} <Link to="/login">{t.logIn}</Link>
         </p>
       </div>
     </div>

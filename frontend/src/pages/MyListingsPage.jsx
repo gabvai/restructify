@@ -3,11 +3,15 @@ import { Link } from "react-router-dom";
 
 import Button from "../components/Button.jsx";
 import { listBeamsRequest } from "../api/beams.js";
+import { translations } from "../i18n/translations.js";
 import styles from "./MyListingsPage.module.css";
+
+const t = translations.listings;
+const common = translations.common;
 
 const formatNumber = (value) => {
   if (value === null || value === undefined || value === "") {
-    return "—";
+    return common.emptyValue;
   }
 
   const parsed = Number(value);
@@ -16,7 +20,7 @@ const formatNumber = (value) => {
 
 const formatPrice = (value) => {
   if (value === null || value === undefined || value === "") {
-    return "—";
+    return common.emptyValue;
   }
 
   const parsed = Number(value);
@@ -54,28 +58,28 @@ const MyListingsPage = () => {
     <section>
       <div className={styles.header}>
         <div>
-          <h1>My Listings</h1>
-          <p className="muted">All beams you have created.</p>
+          <h1>{t.title}</h1>
+          <p className="muted">{t.subtitle}</p>
         </div>
         <Link to="/beams/new">
-          <Button>New beam</Button>
+          <Button>{t.newBeam}</Button>
         </Link>
       </div>
 
-      {loading && <div className={styles.state}>Loading...</div>}
+      {loading && <div className={styles.state}>{t.loading}</div>}
 
       {!loading && error && (
         <div className={styles.error}>
           {error}
           <button type="button" className={styles.retry} onClick={loadBeams}>
-            Retry
+            {t.retry}
           </button>
         </div>
       )}
 
       {!loading && !error && beams.length === 0 && (
         <div className={styles.state}>
-          No listings yet. <Link to="/beams/new">Create your first beam</Link>.
+          {t.emptyPrefix} <Link to="/beams/new">{t.emptyCta}</Link>.
         </div>
       )}
 
@@ -84,26 +88,26 @@ const MyListingsPage = () => {
           {beams.map((beam) => (
             <li key={beam.id} className={styles.card}>
               <div className={styles.cardHeader}>
-                <h3 className={styles.title}>{beam.title || "Untitled beam"}</h3>
+                <h3 className={styles.title}>{beam.title || t.untitledBeam}</h3>
                 <span className={styles.price}>{formatPrice(beam.price_eur)}</span>
               </div>
 
               <dl className={styles.meta}>
                 <div>
-                  <dt>Profile</dt>
-                  <dd>{beam.profile_name || "—"}</dd>
+                  <dt>{t.profile}</dt>
+                  <dd>{beam.profile_name || common.emptyValue}</dd>
                 </div>
                 <div>
-                  <dt>Length</dt>
+                  <dt>{t.length}</dt>
                   <dd>{formatNumber(beam.length_mm)} mm</dd>
                 </div>
                 <div>
-                  <dt>Condition</dt>
-                  <dd>{beam.condition || "—"}</dd>
+                  <dt>{t.condition}</dt>
+                  <dd>{beam.condition || common.emptyValue}</dd>
                 </div>
                 <div>
-                  <dt>Location</dt>
-                  <dd>{beam.location || "—"}</dd>
+                  <dt>{t.location}</dt>
+                  <dd>{beam.location || common.emptyValue}</dd>
                 </div>
               </dl>
             </li>

@@ -5,9 +5,11 @@ import Button from "../components/Button.jsx";
 import FormField from "../components/FormField.jsx";
 import Input from "../components/Input.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import { translations } from "../i18n/translations.js";
 import styles from "./AuthPage.module.css";
 
 const LoginPage = () => {
+  const t = translations.auth.login;
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -40,11 +42,11 @@ const LoginPage = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.card}>
-        <h1>Log in</h1>
-        <p className="muted">Welcome back. Enter your credentials to continue.</p>
+        <h1>{t.title}</h1>
+        <p className="muted">{t.subtitle}</p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
-          <FormField label="Email" htmlFor="email">
+          <FormField label={t.email} htmlFor="email">
             <Input
               id="email"
               name="email"
@@ -56,7 +58,7 @@ const LoginPage = () => {
             />
           </FormField>
 
-          <FormField label="Password" htmlFor="password">
+          <FormField label={t.password} htmlFor="password">
             <Input
               id="password"
               name="password"
@@ -71,12 +73,12 @@ const LoginPage = () => {
           {error && <div className={styles.error}>{error}</div>}
 
           <Button type="submit" fullWidth disabled={submitting}>
-            {submitting ? "Signing in..." : "Sign in"}
+            {submitting ? t.submitting : t.submit}
           </Button>
         </form>
 
         <p className={styles.footer}>
-          No account? <Link to="/register">Register</Link>
+          {t.noAccount} <Link to="/register">{t.register}</Link>
         </p>
       </div>
     </div>

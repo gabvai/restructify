@@ -1,6 +1,7 @@
 .navbar {
   border-bottom: 1px solid var(--color-border);
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+  backdrop-filter: blur(4px);
 }
 
 .inner {
@@ -15,6 +16,7 @@
 .brand {
   font-weight: 600;
   letter-spacing: -0.01em;
+  color: #4a5f3f;
 }
 
 .links {
@@ -39,8 +41,8 @@
 }
 
 .linkActive {
-  color: var(--color-text);
-  border-bottom-color: var(--color-text);
+  color: #3f5b3b;
+  border-bottom-color: #5a7a4f;
 }
 
 .userArea {
@@ -65,5 +67,5 @@
 }
 
 .logoutButton:hover {
-  background: var(--color-surface);
+  background: #e8e3d5;
 }

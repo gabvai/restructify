@@ -1,13 +1,13 @@
 :root {
-  --color-bg: #ffffff;
-  --color-surface: #fafafa;
-  --color-border: #e5e7eb;
-  --color-text: #111827;
-  --color-text-muted: #6b7280;
-  --color-primary: #111827;
-  --color-primary-hover: #000000;
-  --color-danger: #b91c1c;
-  --color-success: #047857;
+  --color-bg: #f6f4ef;
+  --color-surface: #ece8dc;
+  --color-border: #d8d1bf;
+  --color-text: #2d3a2f;
+  --color-text-muted: #62705f;
+  --color-primary: #3f5b3b;
+  --color-primary-hover: #334a30;
+  --color-danger: #a33b2f;
+  --color-success: #3f7a45;
 
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -40,7 +40,7 @@ body {
   font-size: 15px;
   line-height: 1.5;
   color: var(--color-text);
-  background: var(--color-bg);
+  background: radial-gradient(circle at top right, #eef4e7 0%, var(--color-bg) 38%);
   -webkit-font-smoothing: antialiased;
 }
 

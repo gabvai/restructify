@@ -5,32 +5,35 @@ import Button from "../components/Button.jsx";
 import FormField from "../components/FormField.jsx";
 import Input from "../components/Input.jsx";
 import { createBeamRequest } from "../api/beams.js";
+import { translations } from "../i18n/translations.js";
 import styles from "./CreateBeamPage.module.css";
 
+const t = translations.createBeam;
+
 const textFields = [
-  { name: "title", label: "Title", required: true },
-  { name: "description", label: "Description" },
-  { name: "beam_name", label: "Beam name", required: true },
-  { name: "beam_type", label: "Beam type", required: true },
-  { name: "profile_name", label: "Profile name" },
-  { name: "steel_grade", label: "Steel grade" },
-  { name: "surface_coating", label: "Surface coating" },
-  { name: "condition", label: "Condition" },
-  { name: "defects", label: "Defects" },
-  { name: "usage_history", label: "Usage history" },
-  { name: "drawings", label: "Drawings" },
-  { name: "location", label: "Location" }
+  { name: "title", label: t.fields.title, required: true },
+  { name: "description", label: t.fields.description },
+  { name: "beam_name", label: t.fields.beam_name, required: true },
+  { name: "beam_type", label: t.fields.beam_type, required: true },
+  { name: "profile_name", label: t.fields.profile_name },
+  { name: "steel_grade", label: t.fields.steel_grade },
+  { name: "surface_coating", label: t.fields.surface_coating },
+  { name: "condition", label: t.fields.condition },
+  { name: "defects", label: t.fields.defects },
+  { name: "usage_history", label: t.fields.usage_history },
+  { name: "drawings", label: t.fields.drawings },
+  { name: "location", label: t.fields.location }
 ];
 
 const numberFields = [
-  { name: "length_mm", label: "Length (mm)", step: "1" },
-  { name: "weight_kg", label: "Weight (kg)", step: "0.01" },
-  { name: "height_mm", label: "Height (mm)", step: "1" },
-  { name: "width_mm", label: "Width (mm)", step: "1" },
-  { name: "web_thickness_mm", label: "Web thickness (mm)", step: "0.1" },
-  { name: "flange_thickness_mm", label: "Flange thickness (mm)", step: "0.1" },
-  { name: "quantity", label: "Quantity", step: "1" },
-  { name: "price_eur", label: "Price (EUR)", step: "0.01" }
+  { name: "length_mm", label: t.fields.length_mm, step: "1" },
+  { name: "weight_kg", label: t.fields.weight_kg, step: "0.01" },
+  { name: "height_mm", label: t.fields.height_mm, step: "1" },
+  { name: "width_mm", label: t.fields.width_mm, step: "1" },
+  { name: "web_thickness_mm", label: t.fields.web_thickness_mm, step: "0.1" },
+  { name: "flange_thickness_mm", label: t.fields.flange_thickness_mm, step: "0.1" },
+  { name: "quantity", label: t.fields.quantity, step: "1" },
+  { name: "price_eur", label: t.fields.price_eur, step: "0.01" }
 ];
 
 const buildInitialState = () => {
@@ -87,7 +90,7 @@ const CreateBeamPage = () => {
     try {
       const payload = normalizePayload(form);
       await createBeamRequest(payload);
-      setSuccess("Beam created successfully.");
+      setSuccess(t.success);
       setForm(buildInitialState());
 
       setTimeout(() => navigate("/beams"), 700);
@@ -100,8 +103,8 @@ const CreateBeamPage = () => {
 
   return (
     <section>
-      <h1>Create Beam</h1>
-      <p className="muted">Fill in the beam specifications and submit.</p>
+      <h1>{t.title}</h1>
+      <p className="muted">{t.subtitle}</p>
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.grid}>
@@ -149,10 +152,10 @@ const CreateBeamPage = () => {
             variant="secondary"
             onClick={() => navigate("/beams")}
           >
-            Cancel
+            {t.cancel}
           </Button>
           <Button type="submit" disabled={submitting}>
-            {submitting ? "Saving..." : "Create beam"}
+            {submitting ? t.saving : t.submit}
           </Button>
         </div>
       </form>
