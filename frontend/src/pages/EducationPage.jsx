@@ -1,82 +1,21 @@
 import { useMemo, useState } from "react";
 
-import steelStructureImage from "../assets/images/steel-structure.png";
+import steelStructureImage from "../assets/images/education-condition-rusted-beam.png";
 import Checklist from "../components/education/Checklist.jsx";
 import FactCard from "../components/education/FactCard.jsx";
 import ImageChoiceCard from "../components/education/ImageChoiceCard.jsx";
 import QuizQuestion from "../components/education/QuizQuestion.jsx";
+import { translations } from "../i18n/translations.js";
 import styles from "./EducationPage.module.css";
-
-const facts = [
-  {
-    icon: "♻",
-    title: "Statybos atliekos",
-    text: "Statybos ir griovimo atliekos sudaro didele visu atlieku dali Europoje.",
-    source: "Saltinis: European Commission"
-  },
-  {
-    icon: "☁",
-    title: "CO2 emisijos",
-    text: "Pastatu sektorius turi didele itaka pasaulinems CO2 emisijoms.",
-    source: "Saltinis: UNEP"
-  },
-  {
-    icon: "🔁",
-    title: "Pakartotinis panaudojimas",
-    text: "Tinkamai ivertintos konstrukcijos gali buti naudojamos pakartotinai.",
-    source: "Saltinis: Circular construction reports"
-  }
-];
-
-const quizQuestions = [
-  {
-    id: 1,
-    question: "Koks pagrindinis pernaudojimo privalumas statybose?",
-    correctOptionId: "B",
-    explanation: "Pakartotinis panaudojimas taupo zaliavas ir mazina atliekas.",
-    options: [
-      { id: "A", text: "Padideja nauju medziagu poreikis" },
-      { id: "B", text: "Maziau atlieku ir mazesne CO2 tarsa" },
-      { id: "C", text: "Statyba visada uztrunka ilgiau" }
-    ]
-  },
-  {
-    id: 2,
-    question: "Ka reikia pirmiausia patikrinti pries naudojant sena sija?",
-    correctOptionId: "A",
-    explanation: "Svarbiausia ivertinti konstrukcijos bukle ir nesancias savybes.",
-    options: [
-      { id: "A", text: "Bukle, deformacijos ir pazeidimai" },
-      { id: "B", text: "Tik spalva" },
-      { id: "C", text: "Tik kaina" }
-    ]
-  },
-  {
-    id: 3,
-    question: "Ar pakartotinis panaudojimas gali buti legalus?",
-    correctOptionId: "C",
-    explanation: "Taip, jei atitinkami standartai ir atliktas reikalingas vertinimas.",
-    options: [
-      { id: "A", text: "Ne, visada draudziama" },
-      { id: "B", text: "Tik gyvenamuosiuose pastatuose" },
-      { id: "C", text: "Taip, laikantis reikalavimu" }
-    ]
-  }
-];
 
 const conditionChoices = [
   { id: "A", label: "Netinkama", isCorrect: false },
   { id: "B", label: "Tinkama po valymo", isCorrect: true }
 ];
 
-const reusableStructures = [
-  { id: 1, label: "Plienines sijos" },
-  { id: 2, label: "Betonines kolonos" },
-  { id: 3, label: "Perdangos plokstes" },
-  { id: 4, label: "Santvaros" }
-];
-
 const EducationPage = () => {
+  const t = translations.education;
+  const quizQuestions = t.quiz.questions;
   const [quizIndex, setQuizIndex] = useState(0);
   const [quizAnswers, setQuizAnswers] = useState({});
   const [conditionAnswer, setConditionAnswer] = useState(null);
@@ -103,21 +42,72 @@ const EducationPage = () => {
   return (
     <section className={styles.page}>
       <header className={styles.header}>
-        <h1>Edukacija</h1>
-        <p className="muted">Trumpai, aiskiai ir praktiskai apie konstrukciju pernaudojima.</p>
+        <aside className={styles.quoteImageCard}>
+          <img src="/education-quote-hero.png" alt={t.quoteImageAlt} className={styles.quoteImage} />
+        </aside>
       </header>
 
       <section className={styles.grid}>
         <article className={styles.fullWidth}>
-          <h2 className={styles.sectionTitle}>Ar zinojai?</h2>
+          <h2 className={`${styles.sectionTitle} ${styles.centeredSectionTitle}`}>{t.factsTitle}</h2>
           <div className={styles.factGrid}>
-            {facts.map((fact) => (
+            {t.facts.map((fact) => (
               <FactCard key={fact.title} {...fact} />
             ))}
           </div>
         </article>
 
         <article className={styles.fullWidth}>
+          <section className={styles.examplesSection} aria-labelledby="realus-pavyzdziai-title">
+            <h2
+              id="realus-pavyzdziai-title"
+              className={`${styles.sectionTitle} ${styles.centeredSectionTitle}`}
+            >
+              {t.examples.title}
+            </h2>
+            <p className={styles.examplesIntro}>{t.examples.description}</p>
+
+            <article className={styles.exampleCard}>
+              <img
+                src="/education-real-example.png"
+                alt={t.examples.card.imageAlt}
+                className={styles.exampleImage}
+              />
+
+              <div className={styles.exampleBody}>
+                <h3>{t.examples.card.title}</h3>
+                <p>{t.examples.card.text}</p>
+
+                <p className={styles.exampleSubheading}>{t.examples.card.processTitle}</p>
+                <ul className={styles.exampleProcessList}>
+                  {t.examples.card.process.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ul>
+
+                <p className={styles.exampleSubheading}>{t.examples.card.impactTitle}</p>
+                <ul className={styles.exampleProcessList}>
+                  {t.examples.card.impact.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+
+                <p className={styles.exampleSource}>
+                  Šaltinis:{" "}
+                  <a href={t.examples.card.sourceUrl} target="_blank" rel="noreferrer">
+                    {t.examples.card.source}
+                  </a>
+                </p>
+              </div>
+            </article>
+          </section>
+        </article>
+
+        <article className={styles.fullWidth}>
+          <section className={styles.quizSection}>
+            <h2 className={`${styles.sectionTitle} ${styles.centeredSectionTitle}`}>{t.quiz.title}</h2>
+          </section>
+
           <QuizQuestion
             question={currentQuestion}
             questionIndex={quizIndex}
@@ -146,53 +136,43 @@ const EducationPage = () => {
         </article>
 
         <ImageChoiceCard
-          title="Atspek bukle"
+          title="Atspėk būklę"
           imageSrc={steelStructureImage}
-          imageAlt="Rudziu paveikta plienine sija"
-          question="Kaip vertini sia konstrukcija?"
+          imageAlt="Rūdžių paveikta plieninė sija"
+          question="Kaip vertini šią konstrukciją?"
           choices={conditionChoices}
           selectedId={conditionAnswer}
           onSelect={setConditionAnswer}
           explanation={
             selectedCondition?.isCorrect
-              ? "Teisingai. Esant pavirsinei korozijai, konstrukcija daznai gali buti naudojama po valymo ir ivertinimo."
-              : "Ne visada. Jei pazeidimas pavirsinis, po valymo ir inzinerinio ivertinimo konstrukcija daznai tinkama."
+              ? "Teisingai. Esant paviršinei korozijai, konstrukcija dažnai gali būti naudojama po valymo ir įvertinimo."
+              : "Ne visada. Jei pažeidimas paviršinis, po valymo ir inžinerinio įvertinimo konstrukcija dažnai būna tinkama."
           }
         />
 
-        <Checklist
-          title="Kada galima naudoti pakartotinai?"
-          items={[
-            "Nera deformaciju",
-            "Nera giliu pazeidimu",
-            "Nera stiprios korozijos",
-            "Zinoma kilme (pageidautina)"
-          ]}
-        />
+        <div className={styles.plainChecklist}>
+          <Checklist
+            title="Kada galima naudoti pakartotinai?"
+            items={[
+              "Nėra deformacijų",
+              "Nėra gilių pažeidimų",
+              "Nėra stiprios korozijos",
+              "Žinoma kilmė (pageidautina)"
+            ]}
+          />
+        </div>
 
-        <article className="edu-card">
+        <article className={styles.legalSection}>
           <h2>Ar tai legalu?</h2>
           <p>
-            Taip, pakartotinis konstrukciju naudojimas galimas, taciau turi atitikti taikomus
+            Taip, pakartotinis konstrukcijų naudojimas galimas, tačiau turi atitikti taikomus
             standartus ir norminius reikalavimus.
           </p>
-          <p>Daznai reikalingas inzinerinis ivertinimas ir dokumentacija.</p>
-          <p className={styles.legalIcon} aria-label="Balanso svarstykliu ikona">
+          <p>Dažnai reikalingas inžinerinis įvertinimas ir dokumentacija.</p>
+          <p className={styles.legalIcon} aria-label="Balanso svarstyklių ikona">
             ⚖
           </p>
         </article>
-      </section>
-
-      <section className={styles.scrollerSection}>
-        <h2 className={styles.sectionTitle}>Dazniausiai pernaudojamos konstrukcijos</h2>
-        <div className={styles.scroller}>
-          {reusableStructures.map((item) => (
-            <article key={item.id} className={styles.scrollCard}>
-              <img src={steelStructureImage} alt={item.label} />
-              <p>{item.label}</p>
-            </article>
-          ))}
-        </div>
       </section>
     </section>
   );

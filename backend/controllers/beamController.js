@@ -1,6 +1,7 @@
 const {
   createBeam,
   listBeams,
+  listAllBeams,
   getBeamById,
   updateBeam,
   deleteBeam
@@ -42,6 +43,19 @@ const createBeamListing = async (req, res, next) => {
 const getBeams = async (req, res, next) => {
   try {
     const beams = await listBeams(req.user);
+
+    res.status(200).json({
+      status: "success",
+      data: beams
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getAllBeams = async (req, res, next) => {
+  try {
+    const beams = await listAllBeams(req.user);
 
     res.status(200).json({
       status: "success",
@@ -98,6 +112,7 @@ const deleteBeamListing = async (req, res, next) => {
 module.exports = {
   createBeamListing,
   getBeams,
+  getAllBeams,
   getBeam,
   updateBeamListing,
   deleteBeamListing

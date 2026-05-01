@@ -3,8 +3,10 @@ export const translations = {
     brand: "ReStructify",
     home: "Pagrindinis",
     education: "Edukacija",
-    createBeam: "Sukurti siją",
+    createBeam: "Pridėti konstrukciją",
+    allListings: "Visi skelbimai",
     myListings: "Mano skelbimai",
+    cart: "Krepšelis",
     logOut: "Atsijungti"
   },
   auth: {
@@ -33,12 +35,12 @@ export const translations = {
     }
   },
   createBeam: {
-    title: "Sukurti siją",
+    title: "Pridėti konstrukciją",
     subtitle: "Užpildykite parduodamos konstrukcijos duomenis.",
     success: "Sija sėkmingai sukurta.",
     cancel: "Atšaukti",
     saving: "Saugoma...",
-    submit: "Sukurti siją",
+    submit: "Pridėti konstrukciją",
     fields: {
       title: "Pavadinimas",
       description: "Aprašymas",
@@ -74,7 +76,23 @@ export const translations = {
     profile: "Profilis",
     length: "Ilgis",
     condition: "Būklė",
-    location: "Vieta"
+    location: "Vieta",
+    addToCart: "Pridėti į krepšelį",
+    view: "Peržiūrėti"
+  },
+  allListings: {
+    title: "Visi skelbimai",
+    subtitle: "Peržiūrėkite visas šiuo metu paskelbtas konstrukcijas.",
+    filter: "Filtruoti"
+  },
+  cart: {
+    title: "Krepšelis",
+    empty: "Krepšelis kol kas tuščias.",
+    clear: "Išvalyti krepšelį",
+    close: "Uždaryti",
+    pay: "Apmokėti",
+    remove: "Pašalinti",
+    qty: "Kiekis"
   },
   common: {
     emptyValue: "—"
@@ -85,7 +103,7 @@ export const translations = {
     heroSubtitle:
       "Parduok. Pakartotinai naudok. Sutaupyk. Kartu mažiname atliekas ir kuriame tvaresnę statybų ateitį.",
     heroPrimaryCta: "Įkelti konstrukciją",
-    heroSecondaryCta: "Naršyti konstrukcijas",
+    heroSecondaryCta: "Ieškoti konstrukcijų",
     heroBadges: [
       "Mažina CO₂ emisijas",
       "Taupo išteklius",
@@ -165,8 +183,8 @@ export const translations = {
 
     impactTitle: "Kartu kuriame tvaresnę ateitį",
     impactItems: [
-      { value: "2 450 t", label: "Sutaupyta CO₂ per paskutinius 12 mėn." },
-      { value: "1 250", label: "Konstrukcijų suteikta antra gyvybė" }
+      { value: "110 t", label: "Sutaupyta CO₂ per paskutinius 12 mėn." },
+      { value: "210", label: "Konstrukcijų suteikta antra gyvybė" }
     ],
 
     impactImageAlt: "Tvarios statybos ir gamtos fonas",
@@ -174,5 +192,112 @@ export const translations = {
     finalTitle: "Neišmesk – panaudok dar kartą",
     finalSubtitle: "Prisijunk prie tvarių statybų judėjimo jau šiandien.",
     finalCta: "Pradėti dabar"
+  },
+  education: {
+    title: "Edukacija",
+    subtitle:
+      "Sužinok, kada konstrukcijas verta pernaudoti, kaip tai daryti saugiai ir kokią vertę tai gali sukurti.",
+    quoteImageAlt: "Citata apie edukaciją ir sąmoningumą",
+    factsTitle: "Ar žinojai?",
+    facts: [
+      {
+        icon: "♻",
+        value: "~30%",
+        title: "Statybos atliekos",
+        text: "Statybos ir griovimo atliekos sudaro daugiau nei trečdalį visų Europos Sąjungoje susidarančių atliekų.",
+        source: "European Commission",
+        sourceUrl: "https://environment.ec.europa.eu/topics/waste-and-recycling/construction-and-demolition-waste_en"
+      },
+      {
+        icon: "☁",
+        value: "34%",
+        title: "CO₂ emisijos",
+        text: "Pastatų ir statybos sektorius 2024 m. sudarė apie 34 % pasaulinių CO₂ emisijų.",
+        source: "UNEP Global Status Report for Buildings and Construction 2024/2025",
+        sourceUrl:
+          "https://www.unep.org/resources/report/global-status-report-buildings-and-construction-20242025"
+      },
+      {
+        icon: "🧱",
+        value: "11%",
+        title: "Medžiagų poveikis",
+        text: "Statybinės medžiagos ir statybos procesai sudaro apie 11 % pasaulinių su energija susijusių anglies emisijų.",
+        source: "World Green Building Council",
+        sourceUrl: "https://worldgbc.org/climate-action/embodied-carbon/"
+      }
+    ],
+    examples: {
+      title: "Realūs pavyzdžiai",
+      description:
+        "Tikri projektai, kurie parodo, kad net senos konstrukcijos gali būti sėkmingai pernaudotos.",
+      card: {
+        imageAlt: "Pernaudojamų plieninių sijų etapai: paruošimas ir pritaikymas naujai statybai",
+        title: "Pernaudotos plieninės sijos Londone",
+        text: "Viename Londono projekte senos plieninės sijos nebuvo išmestos – jos buvo įvertintos ir sėkmingai panaudotos naujai konstrukcijai. Nors paviršiuje buvo matoma korozija, po apdorojimo paaiškėjo, kad jų tvirtumas išlikęs.",
+        processTitle: "Kaip vyko procesas:",
+        process: [
+          "Konstrukcijos išmontuotos iš seno pastato",
+          "Rūdys ir senos dangos pašalintos (smėliavimas / shot blasting)",
+          "Atliktas stiprumo ir būklės vertinimas",
+          "Tinkamos sijos integruotos į naują statinį"
+        ],
+        impactTitle: "Ką tai parodo:",
+        impact: [
+          "Vizualiai pažeistos konstrukcijos nebūtinai yra netinkamos",
+          "Po tinkamo įvertinimo jas galima saugiai pernaudoti",
+          "Mažinamas atliekų kiekis ir CO₂ emisijos"
+        ],
+        source: "Springer (2023)",
+        sourceUrl: "https://link.springer.com/article/10.1007/s13296-023-00778-4"
+      }
+    },
+    quiz: {
+      title: "Pasitikrink žinias",
+      questions: [
+        {
+          id: 1,
+          question: "Kada plieninė konstrukcija gali būti laikoma tinkama pakartotiniam naudojimui?",
+          correctOptionId: "B",
+          explanation: "Sprendimas grindžiamas inžineriniu vertinimu, ne vien išvaizda.",
+          sourceLabel: "Springer (2023)",
+          sourceUrl: "https://link.springer.com/article/10.1007/s13296-023-00778-4",
+          options: [
+            { id: "A", text: "Kai ji neturi jokių vizualių pažeidimų" },
+            { id: "B", text: "Kai po patikros jos mechaninės savybės atitinka reikalavimus" },
+            { id: "C", text: "Kai ji buvo naudota mažiau nei 5 metus" },
+            { id: "D", text: "Kai jos paviršius yra perdažytas" }
+          ]
+        },
+        {
+          id: 2,
+          question: "Kuris veiksnys dažniausiai lemia, ar konstrukciją galima pernaudoti?",
+          correctOptionId: "C",
+          explanation: "Svarbiausia – medžiagos savybės (stiprumas, pažeidimai, korozija).",
+          sourceLabel: "DISRUPT Toolkit",
+          sourceUrl:
+            "https://asbp.org.uk/wp-content/uploads/2023/03/Business-considerations-for-steel-reuse-DISRUPT-Toolkit.pdf",
+          options: [
+            { id: "A", text: "Konstrukcijos spalva" },
+            { id: "B", text: "Projekto vieta (šalis)" },
+            { id: "C", text: "Medžiagos būklė ir likęs stiprumas" },
+            { id: "D", text: "Statybos metai" }
+          ]
+        },
+        {
+          id: 3,
+          question: "Kodėl konstrukcijų pernaudojimas laikomas tvaresniu sprendimu?",
+          correctOptionId: "B",
+          explanation: "Mažiau naujos gamybos reiškia mažiau emisijų ir atliekų.",
+          sourceLabel: "World Green Building Council",
+          sourceUrl: "https://worldgbc.org/climate-action/embodied-carbon/",
+          options: [
+            { id: "A", text: "Nes sumažina darbo jėgos poreikį" },
+            { id: "B", text: "Nes sumažina naujų medžiagų poreikį ir CO₂ emisijas" },
+            { id: "C", text: "Nes visada pagreitina statybą" },
+            { id: "D", text: "Nes nereikia projektavimo" }
+          ]
+        }
+      ]
+    }
   }
 };

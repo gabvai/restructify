@@ -4,7 +4,10 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { translations } from "../i18n/translations.js";
 import ecoConstructionImage from "../assets/images/eco-construction.png";
 import homeHeroImage from "../assets/images/home-hero-sustainable-building.png";
-import steelStructureImage from "../assets/images/steel-structure.png";
+import productImage1 from "../assets/images/product-1.png";
+import productImage2 from "../assets/images/product-2.png";
+import productImage3 from "../assets/images/product-3.png";
+import productImage4 from "../assets/images/product-4.png";
 import styles from "./HomePage.module.css";
 
 const CountUpValue = ({ value }) => {
@@ -80,6 +83,7 @@ const HomePage = () => {
   const { user } = useAuth();
   const [activeView, setActiveView] = useState("problem");
   const [pointer, setPointer] = useState({ x: 50, y: 50 });
+  const productImages = [productImage1, productImage2, productImage3, productImage4];
 
   const handlePointerMove = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -113,14 +117,9 @@ const HomePage = () => {
                 {t.heroSecondaryCta}
               </Link>
             </div>
-            <ul className={styles.badges}>
-              {t.heroBadges.map((badge) => (
-                <li key={badge}>{badge}</li>
-              ))}
-            </ul>
           </div>
 
-          <aside className={`${styles.heroMedia} ${styles.parallaxSoft}`}>
+          <aside className={styles.heroMedia}>
             <img src={homeHeroImage} alt={t.heroImageAlt} />
           </aside>
         </header>
@@ -204,9 +203,9 @@ const HomePage = () => {
         <section>
           <h2 className={styles.sectionTitle}>{t.productsTitle}</h2>
           <div className={styles.productsGrid}>
-            {t.products.map((product) => (
+            {t.products.map((product, index) => (
               <article key={product.name} className={styles.productCard}>
-                <img src={steelStructureImage} alt={t.productImageAlt} />
+                <img src={productImages[index] ?? productImages[0]} alt={t.productImageAlt} />
                 <div className={styles.productBody}>
                   <h3>{product.name}</h3>
                   <dl>

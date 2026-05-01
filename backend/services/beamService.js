@@ -217,6 +217,23 @@ const listBeams = async (authUser) => {
   return result.rows.map(toMergedBeam);
 };
 
+const listAllBeams = async (authUser) => {
+  if (!authUser) {
+    throw httpError(401, "Authentication required");
+  }
+
+  const result = await pool.query(
+    `
+      SELECT ${beamSelectColumns}
+      FROM beams b
+      INNER JOIN constructions c ON c.id = b.construction_id
+      ORDER BY b.id DESC
+    `
+  );
+
+  return result.rows.map(toMergedBeam);
+};
+
 const getBeamById = async (authUser, beamId) => {
   if (!authUser) {
     throw httpError(401, "Authentication required");
@@ -370,6 +387,7 @@ const deleteBeam = async (authUser, beamId) => {
 module.exports = {
   createBeam,
   listBeams,
+  listAllBeams,
   getBeamById,
   updateBeam,
   deleteBeam

@@ -3,6 +3,7 @@ const express = require("express");
 const {
   createBeamListing,
   getBeams,
+  getAllBeams,
   getBeam,
   updateBeamListing,
   deleteBeamListing
@@ -16,6 +17,7 @@ router.use(authenticate);
 
 router.post("/", forbidRoles(["specialist"]), createBeamListing);
 router.get("/", getBeams);
+router.get("/all", getAllBeams);
 router.get("/:id", getBeam);
 router.put("/:id", forbidRoles(["specialist"]), updateBeamListing);
 router.delete("/:id", forbidRoles(["specialist"]), deleteBeamListing);

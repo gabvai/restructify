@@ -5,6 +5,11 @@ export const listBeamsRequest = async () => {
   return response.data;
 };
 
+export const listAllBeamsRequest = async () => {
+  const response = await apiClient.get("/beams/all");
+  return response.data;
+};
+
 export const createBeamRequest = async (beamPayload) => {
   const response = await apiClient.post("/beams", {
     type: "beam",

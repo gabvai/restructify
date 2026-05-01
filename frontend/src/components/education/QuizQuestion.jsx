@@ -1,13 +1,13 @@
 import Card from "./Card.jsx";
 
-const QuizQuestion = ({ question, questionIndex, totalQuestions, selectedOptionId, onSelect }) => {
+const QuizQuestion = ({ title, question, questionIndex, totalQuestions, selectedOptionId, onSelect }) => {
   const answered = selectedOptionId !== null;
   const selectedOption = question.options.find((option) => option.id === selectedOptionId);
 
   return (
     <Card className="edu-quiz-card">
       <div className="edu-quiz-top">
-        <h2>Testas zinioms</h2>
+        {title ? <h2>{title}</h2> : <span />}
         <span className="edu-progress">
           {questionIndex + 1}/{totalQuestions}
         </span>
@@ -48,6 +48,14 @@ const QuizQuestion = ({ question, questionIndex, totalQuestions, selectedOptionI
             {selectedOption?.id === question.correctOptionId ? "Teisingai!" : "Ne visai."}
           </p>
           <p>{question.explanation}</p>
+          {question.sourceUrl && (
+            <p className="edu-feedback-source">
+              Šaltinis:{" "}
+              <a href={question.sourceUrl} target="_blank" rel="noreferrer">
+                {question.sourceLabel ?? question.sourceUrl}
+              </a>
+            </p>
+          )}
         </div>
       )}
     </Card>
