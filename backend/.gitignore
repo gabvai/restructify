@@ -1,3 +1,21 @@
+# Node
 node_modules/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Environment files
 .env
-npm-debug.log*
+backend/.env
+frontend/.env
+ai-service/.env
+
+# AI generated/training outputs
+runs/
+outputs/
+uploads/
+
+# Optional large model files
+*.pt
