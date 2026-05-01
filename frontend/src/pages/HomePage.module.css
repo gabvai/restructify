@@ -149,14 +149,16 @@
   border-radius: 14px;
   overflow: hidden;
   border: 1px solid #d8e6d8;
+  background: #f5f5f5;
   box-shadow: 0 14px 32px rgba(31, 41, 55, 0.12);
+  align-self: start;
 }
 
 .heroMedia img {
   width: 100%;
-  height: 100%;
-  min-height: 320px;
-  object-fit: cover;
+  height: auto;
+  min-height: 0;
+  object-fit: contain;
   display: block;
 }
 

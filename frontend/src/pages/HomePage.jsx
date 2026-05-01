@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { translations } from "../i18n/translations.js";
 import ecoConstructionImage from "../assets/images/eco-construction.png";
+import homeHeroImage from "../assets/images/home-hero-sustainable-building.png";
 import steelStructureImage from "../assets/images/steel-structure.png";
 import styles from "./HomePage.module.css";
 
@@ -120,7 +121,7 @@ const HomePage = () => {
           </div>
 
           <aside className={`${styles.heroMedia} ${styles.parallaxSoft}`}>
-            <img src={ecoConstructionImage} alt={t.heroImageAlt} />
+            <img src={homeHeroImage} alt={t.heroImageAlt} />
           </aside>
         </header>
       </Reveal>

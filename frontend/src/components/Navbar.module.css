@@ -7,16 +7,22 @@
 .inner {
   max-width: 960px;
   margin: 0 auto;
-  padding: 14px var(--space-5);
+  padding: 1px var(--space-5);
   display: flex;
   align-items: center;
   gap: var(--space-5);
 }
 
 .brand {
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: #4a5f3f;
+  display: inline-flex;
+  align-items: center;
+}
+
+.brandLogo {
+  display: block;
+  height: 80px;
+  width: auto;
+  object-fit: contain;
 }
 
 .links {
@@ -33,6 +39,12 @@
   color: var(--color-text-muted);
   padding: 4px 2px;
   border-bottom: 2px solid transparent;
+}
+
+.linkContent {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .link:hover {

@@ -29,7 +29,9 @@ const Navbar = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.inner}>
-        <div className={styles.brand}>{t.brand}</div>
+        <div className={styles.brand}>
+          <img src="/tab-logo.png" alt={t.brand} className={styles.brandLogo} />
+        </div>
 
         <ul className={styles.links}>
           {navItems.map((item) => (
@@ -43,7 +45,9 @@ const Navbar = () => {
                     .join(" ")
                 }
               >
-                {item.label}
+                <span className={styles.linkContent}>
+                  <span>{item.label}</span>
+                </span>
               </NavLink>
             </li>
           ))}
