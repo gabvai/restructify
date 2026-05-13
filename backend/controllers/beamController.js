@@ -2,7 +2,9 @@ const {
   createBeam,
   listBeams,
   listAllBeams,
+  listBeamsBySellerId,
   getBeamById,
+  getAnyBeamById,
   updateBeam,
   deleteBeam
 } = require("../services/beamService");
@@ -26,9 +28,19 @@ const parseBeamId = (rawId) => {
   return beamId;
 };
 
+const parseUserId = (rawId) => {
+  const userId = Number(rawId);
+
+  if (!Number.isInteger(userId) || userId <= 0) {
+    throw httpError(400, "User id must be a positive integer");
+  }
+
+  return userId;
+};
+
 const createBeamListing = async (req, res, next) => {
   try {
-    validateRequiredFields(req.body, ["type", "title", "beam_name", "beam_type"]);
+    validateRequiredFields(req.body, ["type", "title"]);
     const beam = await createBeam(req.user, req.body);
 
     res.status(201).json({
@@ -66,6 +78,20 @@ const getAllBeams = async (req, res, next) => {
   }
 };
 
+const getSellerBeams = async (req, res, next) => {
+  try {
+    const userId = parseUserId(req.params.userId);
+    const beams = await listBeamsBySellerId(req.user, userId);
+
+    res.status(200).json({
+      status: "success",
+      data: beams
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getBeam = async (req, res, next) => {
   try {
     const beamId = parseBeamId(req.params.id);
@@ -80,9 +106,23 @@ const getBeam = async (req, res, next) => {
   }
 };
 
+const getAnyBeam = async (req, res, next) => {
+  try {
+    const beamId = parseBeamId(req.params.id);
+    const beam = await getAnyBeamById(req.user, beamId);
+
+    res.status(200).json({
+      status: "success",
+      data: beam
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateBeamListing = async (req, res, next) => {
   try {
-    validateRequiredFields(req.body, ["type", "title", "beam_name", "beam_type"]);
+    validateRequiredFields(req.body, ["type", "title"]);
     const beamId = parseBeamId(req.params.id);
     const beam = await updateBeam(req.user, beamId, req.body);
 
@@ -113,7 +153,9 @@ module.exports = {
   createBeamListing,
   getBeams,
   getAllBeams,
+  getSellerBeams,
   getBeam,
+  getAnyBeam,
   updateBeamListing,
   deleteBeamListing
 };

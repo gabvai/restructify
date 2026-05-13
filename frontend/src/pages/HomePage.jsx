@@ -1,14 +1,33 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { listAllBeamsRequest } from "../api/beams.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { translations } from "../i18n/translations.js";
 import ecoConstructionImage from "../assets/images/eco-construction.png";
 import homeHeroImage from "../assets/images/home-hero-sustainable-building.png";
-import productImage1 from "../assets/images/product-1.png";
-import productImage2 from "../assets/images/product-2.png";
-import productImage3 from "../assets/images/product-3.png";
-import productImage4 from "../assets/images/product-4.png";
 import styles from "./HomePage.module.css";
+
+const common = translations.common;
+const listingsT = translations.listings;
+
+const formatNumber = (value) => {
+  if (value === null || value === undefined || value === "") {
+    return common.emptyValue;
+  }
+  const parsed = Number(value);
+  return Number.isNaN(parsed) ? String(value) : parsed.toLocaleString();
+};
+
+const formatPrice = (value) => {
+  if (value === null || value === undefined || value === "") {
+    return common.emptyValue;
+  }
+  const parsed = Number(value);
+  if (Number.isNaN(parsed)) {
+    return String(value);
+  }
+  return `€${parsed.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+};
 
 const CountUpValue = ({ value }) => {
   const [display, setDisplay] = useState("0");
@@ -83,7 +102,89 @@ const HomePage = () => {
   const { user } = useAuth();
   const [activeView, setActiveView] = useState("problem");
   const [pointer, setPointer] = useState({ x: 50, y: 50 });
-  const productImages = [productImage1, productImage2, productImage3, productImage4];
+  const [beams, setBeams] = useState([]);
+  const [beamsLoading, setBeamsLoading] = useState(true);
+  const [beamsError, setBeamsError] = useState(null);
+  const [scrollOverflow, setScrollOverflow] = useState({ left: false, right: false });
+  const productsTrackRef = useRef(null);
+
+  const updateScrollOverflow = useCallback(() => {
+    const el = productsTrackRef.current;
+    if (!el) {
+      return;
+    }
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setScrollOverflow({
+      left: scrollLeft > 6,
+      right: scrollLeft + clientWidth < scrollWidth - 6
+    });
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      setBeamsLoading(true);
+      setBeamsError(null);
+      try {
+        const data = await listAllBeamsRequest();
+        if (!cancelled) {
+          setBeams(Array.isArray(data) ? data : []);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setBeamsError(err.message);
+          setBeams([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setBeamsLoading(false);
+        }
+      }
+    };
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (beamsLoading || beams.length === 0) {
+      setScrollOverflow({ left: false, right: false });
+      return undefined;
+    }
+
+    const el = productsTrackRef.current;
+    if (!el) {
+      return undefined;
+    }
+
+    const run = () => {
+      updateScrollOverflow();
+    };
+
+    run();
+    el.addEventListener("scroll", run, { passive: true });
+    window.addEventListener("resize", run);
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(run) : null;
+    ro?.observe(el);
+
+    return () => {
+      el.removeEventListener("scroll", run);
+      window.removeEventListener("resize", run);
+      ro?.disconnect();
+    };
+  }, [beams, beamsLoading, updateScrollOverflow]);
+
+  const scrollProducts = (direction) => {
+    const el = productsTrackRef.current;
+    if (!el) {
+      return;
+    }
+    const delta = Math.max(240, Math.floor(el.clientWidth * 0.85));
+    el.scrollBy({ left: direction * delta, behavior: "smooth" });
+  };
 
   const handlePointerMove = (event) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -202,31 +303,72 @@ const HomePage = () => {
       <Reveal>
         <section>
           <h2 className={styles.sectionTitle}>{t.productsTitle}</h2>
-          <div className={styles.productsGrid}>
-            {t.products.map((product, index) => (
-              <article key={product.name} className={styles.productCard}>
-                <img src={productImages[index] ?? productImages[0]} alt={t.productImageAlt} />
-                <div className={styles.productBody}>
-                  <h3>{product.name}</h3>
-                  <dl>
-                    <div>
-                      <dt>{t.labels.length}</dt>
-                      <dd>{product.length}</dd>
-                    </div>
-                    <div>
-                      <dt>{t.labels.weight}</dt>
-                      <dd>{product.weight}</dd>
-                    </div>
-                    <div>
-                      <dt>{t.labels.quantity}</dt>
-                      <dd>{product.quantity}</dd>
-                    </div>
-                  </dl>
-                  <p className={styles.price}>{product.price}</p>
-                </div>
-              </article>
-            ))}
-          </div>
+          {beamsLoading && <p className={styles.productsState}>{t.productsLoading}</p>}
+          {!beamsLoading && beamsError && <p className={styles.productsState}>{beamsError}</p>}
+          {!beamsLoading && !beamsError && beams.length === 0 && (
+            <p className={styles.productsState}>{t.productsEmpty}</p>
+          )}
+          {!beamsLoading && !beamsError && beams.length > 0 && (
+            <div className={styles.productsCarousel}>
+              {scrollOverflow.left && (
+                <button
+                  type="button"
+                  className={`${styles.carouselBtn} ${styles.carouselBtnLeft}`}
+                  onClick={() => scrollProducts(-1)}
+                  aria-label={t.scrollPrev}
+                >
+                  ‹
+                </button>
+              )}
+              <div ref={productsTrackRef} className={styles.productsTrack}>
+                {beams.map((beam) => (
+                  <Link
+                    key={beam.id}
+                    to={`/beams/all/${beam.id}`}
+                    className={styles.productCardLink}
+                  >
+                    <article className={styles.productCard}>
+                      <div className={styles.productMedia}>
+                        <img
+                          src={beam.image_src || "/tab-logo.png"}
+                          alt={beam.title || listingsT.untitledBeam}
+                          onLoad={updateScrollOverflow}
+                        />
+                      </div>
+                      <div className={styles.productBody}>
+                        <h3>{beam.title || listingsT.untitledBeam}</h3>
+                        <dl>
+                          <div>
+                            <dt>{t.labels.length}</dt>
+                            <dd>{formatNumber(beam.length_mm)} mm</dd>
+                          </div>
+                          <div>
+                            <dt>{t.labels.weight}</dt>
+                            <dd>{formatNumber(beam.weight_kg)} kg</dd>
+                          </div>
+                          <div>
+                            <dt>{t.labels.quantity}</dt>
+                            <dd>{formatNumber(beam.quantity)}</dd>
+                          </div>
+                        </dl>
+                        <p className={styles.price}>{formatPrice(beam.price_eur)}</p>
+                      </div>
+                    </article>
+                  </Link>
+                ))}
+              </div>
+              {scrollOverflow.right && (
+                <button
+                  type="button"
+                  className={`${styles.carouselBtn} ${styles.carouselBtnRight}`}
+                  onClick={() => scrollProducts(1)}
+                  aria-label={t.scrollNext}
+                >
+                  ›
+                </button>
+              )}
+            </div>
+          )}
         </section>
       </Reveal>
 

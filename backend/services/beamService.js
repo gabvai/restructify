@@ -4,6 +4,8 @@ const { httpError } = require("../utils/httpError");
 const beamSelectColumns = `
   c.id AS construction_id,
   c.user_id,
+  u.name AS seller_name,
+  u.email AS seller_email,
   c.type,
   c.title,
   c.description,
@@ -29,15 +31,37 @@ const beamSelectColumns = `
   b.defects,
   b.usage_history,
   b.drawings,
+  b.certificate_src,
   b.quantity,
   b.location,
-  b.price_eur
+  b.price_eur,
+  b.image_src
 `;
+
+const resolveBeamName = (payload) => {
+  const explicit = payload.beam_name != null ? String(payload.beam_name).trim() : "";
+  if (explicit) {
+    return explicit;
+  }
+  const fromTitle = payload.title != null ? String(payload.title).trim() : "";
+  return fromTitle || null;
+};
+
+const resolveQuantity = (payload) => {
+  const raw = payload.quantity;
+  if (raw === undefined || raw === null || raw === "") {
+    return 1;
+  }
+  const n = Number(raw);
+  return Number.isFinite(n) && n > 0 ? n : 1;
+};
 
 const toMergedBeam = (row) => ({
   id: row.beam_id,
   construction_id: row.construction_id,
   user_id: row.user_id,
+  seller_name: row.seller_name,
+  seller_email: row.seller_email,
   type: row.type,
   title: row.title,
   description: row.description,
@@ -62,9 +86,11 @@ const toMergedBeam = (row) => ({
   defects: row.defects,
   usage_history: row.usage_history,
   drawings: row.drawings,
+  certificate_src: row.certificate_src,
   quantity: row.quantity,
   location: row.location,
-  price_eur: row.price_eur
+  price_eur: row.price_eur,
+  image_src: row.image_src
 });
 
 const isAdmin = (user) => user.role === "admin";
@@ -90,6 +116,7 @@ const getBeamByIdForAuth = async (beamId) => {
       SELECT ${beamSelectColumns}
       FROM beams b
       INNER JOIN constructions c ON c.id = b.construction_id
+      INNER JOIN users u ON u.id = c.user_id
       WHERE b.id = $1
       LIMIT 1
     `,
@@ -144,19 +171,21 @@ const createBeam = async (authUser, payload) => {
         INSERT INTO beams (
           construction_id, beam_name, beam_type, profile_name, length_mm, weight_kg,
           height_mm, width_mm, web_thickness_mm, flange_thickness_mm, steel_grade,
-          surface_coating, condition, defects, usage_history, drawings, quantity, location, price_eur
+          surface_coating, condition, defects, usage_history, drawings, certificate_src, quantity, location, price_eur,
+          image_src
         )
         VALUES (
           $1, $2, $3, $4, $5, $6,
           $7, $8, $9, $10, $11,
-          $12, $13, $14, $15, $16, $17, $18, $19
+          $12, $13, $14, $15, $16, $17, $18, $19, $20,
+          $21
         )
         RETURNING id
       `,
       [
         constructionId,
-        payload.beam_name,
-        payload.beam_type,
+        resolveBeamName(payload),
+        payload.beam_type != null ? String(payload.beam_type).trim() || null : null,
         payload.profile_name || null,
         payload.length_mm || null,
         payload.weight_kg || null,
@@ -170,9 +199,11 @@ const createBeam = async (authUser, payload) => {
         payload.defects || null,
         payload.usage_history || null,
         payload.drawings || null,
-        payload.quantity || null,
+        payload.certificate_src || null,
+        resolveQuantity(payload),
         payload.location || null,
-        payload.price_eur || null
+        payload.price_eur || null,
+        payload.image_src || null
       ]
     );
 
@@ -183,6 +214,7 @@ const createBeam = async (authUser, payload) => {
         SELECT ${beamSelectColumns}
         FROM beams b
         INNER JOIN constructions c ON c.id = b.construction_id
+        INNER JOIN users u ON u.id = c.user_id
         WHERE b.id = $1
         LIMIT 1
       `,
@@ -208,6 +240,7 @@ const listBeams = async (authUser) => {
     SELECT ${beamSelectColumns}
     FROM beams b
     INNER JOIN constructions c ON c.id = b.construction_id
+    INNER JOIN users u ON u.id = c.user_id
   `;
 
   const result = isAdmin(authUser)
@@ -227,8 +260,29 @@ const listAllBeams = async (authUser) => {
       SELECT ${beamSelectColumns}
       FROM beams b
       INNER JOIN constructions c ON c.id = b.construction_id
+      INNER JOIN users u ON u.id = c.user_id
       ORDER BY b.id DESC
     `
+  );
+
+  return result.rows.map(toMergedBeam);
+};
+
+const listBeamsBySellerId = async (authUser, sellerId) => {
+  if (!authUser) {
+    throw httpError(401, "Authentication required");
+  }
+
+  const result = await pool.query(
+    `
+      SELECT ${beamSelectColumns}
+      FROM beams b
+      INNER JOIN constructions c ON c.id = b.construction_id
+      INNER JOIN users u ON u.id = c.user_id
+      WHERE c.user_id = $1
+      ORDER BY b.id DESC
+    `,
+    [sellerId]
   );
 
   return result.rows.map(toMergedBeam);
@@ -245,6 +299,15 @@ const getBeamById = async (authUser, beamId) => {
     throw httpError(403, "You can only view your own beam listings");
   }
 
+  return toMergedBeam(row);
+};
+
+const getAnyBeamById = async (authUser, beamId) => {
+  if (!authUser) {
+    throw httpError(401, "Authentication required");
+  }
+
+  const row = await getBeamByIdForAuth(beamId);
   return toMergedBeam(row);
 };
 
@@ -306,14 +369,16 @@ const updateBeam = async (authUser, beamId, payload) => {
           defects = $13,
           usage_history = $14,
           drawings = $15,
-          quantity = $16,
-          location = $17,
-          price_eur = $18
-        WHERE id = $19
+          certificate_src = $16,
+          quantity = $17,
+          location = $18,
+          price_eur = $19,
+          image_src = $20
+        WHERE id = $21
       `,
       [
-        payload.beam_name,
-        payload.beam_type,
+        payload.beam_name !== undefined ? payload.beam_name : existing.beam_name,
+        payload.beam_type !== undefined ? payload.beam_type : existing.beam_type,
         payload.profile_name || null,
         payload.length_mm || null,
         payload.weight_kg || null,
@@ -327,9 +392,11 @@ const updateBeam = async (authUser, beamId, payload) => {
         payload.defects || null,
         payload.usage_history || null,
         payload.drawings || null,
-        payload.quantity || null,
+        payload.certificate_src !== undefined ? payload.certificate_src : existing.certificate_src,
+        payload.quantity !== undefined ? resolveQuantity(payload) : resolveQuantity({ quantity: existing.quantity }),
         payload.location || null,
         payload.price_eur || null,
+        payload.image_src !== undefined ? payload.image_src : existing.image_src,
         existing.beam_id
       ]
     );
@@ -339,6 +406,7 @@ const updateBeam = async (authUser, beamId, payload) => {
         SELECT ${beamSelectColumns}
         FROM beams b
         INNER JOIN constructions c ON c.id = b.construction_id
+        INNER JOIN users u ON u.id = c.user_id
         WHERE b.id = $1
         LIMIT 1
       `,
@@ -388,7 +456,9 @@ module.exports = {
   createBeam,
   listBeams,
   listAllBeams,
+  listBeamsBySellerId,
   getBeamById,
+  getAnyBeamById,
   updateBeam,
   deleteBeam
 };

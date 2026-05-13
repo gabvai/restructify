@@ -6,6 +6,7 @@ export const translations = {
     createBeam: "Pridėti konstrukciją",
     allListings: "Visi skelbimai",
     myListings: "Mano skelbimai",
+    inspections: "Konstrukcijų patikrinimai",
     cart: "Krepšelis",
     logOut: "Atsijungti"
   },
@@ -67,27 +68,49 @@ export const translations = {
   listings: {
     title: "Mano skelbimai",
     subtitle: "Visos jūsų sukurtos sijos.",
-    newBeam: "Nauja sija",
+    newBeam: "Pridėti naują konstrukciją",
     loading: "Kraunama...",
     retry: "Bandyti dar kartą",
     emptyPrefix: "Skelbimų dar nėra.",
-    emptyCta: "Sukurkite pirmą siją",
+    emptyCta: "Pridėkite naują konstrukciją",
     untitledBeam: "Be pavadinimo",
     profile: "Profilis",
     length: "Ilgis",
     condition: "Būklė",
     location: "Vieta",
     addToCart: "Pridėti į krepšelį",
-    view: "Peržiūrėti"
+    view: "Peržiūrėti",
+    withCertificate: "Su sertifikatu",
+    withoutCertificate: "Be sertifikato"
   },
   allListings: {
     title: "Visi skelbimai",
     subtitle: "Peržiūrėkite visas šiuo metu paskelbtas konstrukcijas.",
     filter: "Filtruoti"
   },
+  inspections: {
+    title: "Konstrukcijų patikrinimai",
+    subtitle: "Užsakykite konstrukcijų patikrinimą pasirinktame mieste.",
+    constructionLabel: "Pasirinkite konstrukciją be sertifikato",
+    constructionPlaceholder: "Pasirinkite konstrukciją",
+    locationLabel: "Tikrinimo vieta",
+    quantityLabel: "Tikrinamų konstrukcijų kiekis",
+    quantityHint: "Nurodykite, kiek vienetų bus tikrinama.",
+    priceLabel: "Apytikslė kaina",
+    totalLabel: "Bendra suma",
+    orderButton: "Rašyti laišką dėl patikrinimo",
+    empty: "Neturite konstrukcijų be sertifikato.",
+    success: "Laiško užklausa paruošta. Susisieksime dėl patikrinimo laiko.",
+    locations: [
+      { id: "vilnius", name: "Vilnius - UAB Statinių auditai", price: 50 },
+      { id: "kaunas", name: "Kaunas - UAB Konstrukcijų ekspertai", price: 50 },
+      { id: "klaipeda", name: "Klaipėda - UAB Inžineriniai tyrimai", price: 50 }
+    ]
+  },
   cart: {
     title: "Krepšelis",
     empty: "Krepšelis kol kas tuščias.",
+    finalPrice: "Galutinė kaina",
     clear: "Išvalyti krepšelį",
     close: "Uždaryti",
     pay: "Apmokėti",
@@ -166,12 +189,10 @@ export const translations = {
     ],
 
     productsTitle: "Turimos konstrukcijos",
-    products: [
-      { name: "IPE 300 sija", length: "6,0 m", weight: "318 kg", quantity: "12 vnt.", price: "120 € / vnt." },
-      { name: "HEA 240 sija", length: "5,2 m", weight: "274 kg", quantity: "8 vnt.", price: "145 € / vnt." },
-      { name: "IPE 200 sija", length: "4,8 m", weight: "196 kg", quantity: "21 vnt.", price: "89 € / vnt." },
-      { name: "HEB 280 sija", length: "7,1 m", weight: "402 kg", quantity: "5 vnt.", price: "188 € / vnt." }
-    ],
+    productsEmpty: "Kol kas viešų skelbimų nėra.",
+    productsLoading: "Kraunamos konstrukcijos...",
+    scrollPrev: "Slinkti į kairę",
+    scrollNext: "Slinkti į dešinę",
 
     labels: {
       length: "Ilgis",

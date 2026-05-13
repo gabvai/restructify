@@ -9,16 +9,27 @@ const t = translations.nav;
 
 const navItems = [
   { to: "/", label: t.home, end: true },
-  { to: "/education", label: t.education },
+  { to: "/education", label: t.education, end: true },
   { to: "/beams/all", label: t.allListings },
-  { to: "/beams/new", label: t.createBeam },
-  { to: "/beams", label: t.myListings }
+  { to: "/inspections", label: t.inspections, end: true },
+  { to: "/beams/new", label: t.createBeam, end: true },
+  { to: "/beams", label: t.myListings, end: true }
 ];
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const { items, itemCount, isCartOpen, openCart, closeCart, removeFromCart, clearCart } = useCart();
   const navigate = useNavigate();
+  const cartTotal = items.reduce((sum, item) => {
+    const price = Number(item.price_eur);
+    if (Number.isNaN(price)) {
+      return sum;
+    }
+    return sum + price * item.quantity;
+  }, 0);
+
+  const formatCartPrice = (value) =>
+    `€${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   const handleLogout = () => {
     logout();
@@ -41,7 +52,7 @@ const Navbar = () => {
             <li key={item.to}>
               <NavLink
                 to={item.to}
-                end={item.end}
+                end={item.end === true}
                 className={({ isActive }) =>
                   [styles.link, isActive ? styles.linkActive : ""]
                     .filter(Boolean)
@@ -118,6 +129,11 @@ const Navbar = () => {
                 ))}
               </ul>
             )}
+
+            <div className={styles.cartTotal}>
+              <span>{translations.cart.finalPrice}</span>
+              <strong>{formatCartPrice(cartTotal)}</strong>
+            </div>
 
             <div className={styles.cartActions}>
               <button type="button" className={styles.cartSecondary} onClick={clearCart}>

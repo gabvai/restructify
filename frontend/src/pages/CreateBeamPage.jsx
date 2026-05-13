@@ -1,12 +1,30 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Button from "../components/Button.jsx";
 import ConstructionTypeSelector from "../components/ConstructionTypeSelector.jsx";
 import FormField from "../components/FormField.jsx";
+import { API_BASE_URL } from "../api/client.js";
 import { createBeamRequest } from "../api/beams.js";
+import { uploadDrawingPdfRequest, uploadListingPhotoRequest } from "../api/uploads.js";
 import { translations } from "../i18n/translations.js";
 import styles from "./CreateBeamPage.module.css";
+
+const publicFileUrl = (stored) => {
+  if (!stored || typeof stored !== "string") {
+    return "";
+  }
+  const s = stored.trim();
+  if (!s) {
+    return "";
+  }
+  if (s.startsWith("http://") || s.startsWith("https://")) {
+    return s;
+  }
+  const base = API_BASE_URL.replace(/\/$/, "");
+  const path = s.startsWith("/") ? s : `/${s}`;
+  return `${base}${path}`;
+};
 
 const t = translations.createBeam;
 
@@ -42,6 +60,7 @@ const buildInitialState = () => {
     defects: "",
     usage_history: "",
     drawings: "",
+    certificate_src: "",
     location: "",
     length_mm: "",
     weight_kg: "",
@@ -50,7 +69,8 @@ const buildInitialState = () => {
     web_thickness_mm: "",
     flange_thickness_mm: "",
     quantity: "",
-    price_eur: ""
+    price_eur: "",
+    image_src: ""
   };
 };
 
@@ -88,19 +108,131 @@ const normalizePayload = (form) => {
   return payload;
 };
 
+const LAST_STEP_INDEX = 3;
+
 const CreateBeamPage = () => {
   const navigate = useNavigate();
+  const drawingFileRef = useRef(null);
+  const certificateFileRef = useRef(null);
+  const listingPhotoRef = useRef(null);
+  const stepRef = useRef(0);
   const [form, setForm] = useState(buildInitialState);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [drawingUploading, setDrawingUploading] = useState(false);
+  const [drawingUploadError, setDrawingUploadError] = useState(null);
+  const [certificateUploading, setCertificateUploading] = useState(false);
+  const [certificateUploadError, setCertificateUploadError] = useState(null);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const [photoUploadError, setPhotoUploadError] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [fieldErrors, setFieldErrors] = useState({});
+
+  useEffect(() => {
+    stepRef.current = currentStep;
+  }, [currentStep]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     setFieldErrors((prev) => ({ ...prev, [name]: "" }));
+    if (name === "drawings") {
+      setDrawingUploadError(null);
+    }
+    if (name === "certificate_src") {
+      setCertificateUploadError(null);
+    }
+    if (name === "image_src") {
+      setPhotoUploadError(null);
+    }
+  };
+
+  const handleDrawingFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setDrawingUploadError(null);
+    setError(null);
+
+    try {
+      setDrawingUploading(true);
+      const { url } = await uploadDrawingPdfRequest(file);
+      setForm((prev) => ({ ...prev, drawings: url }));
+    } catch (uploadErr) {
+      setDrawingUploadError(uploadErr.message);
+    } finally {
+      setDrawingUploading(false);
+      event.target.value = "";
+    }
+  };
+
+  const clearStoredDrawing = () => {
+    setForm((prev) => ({ ...prev, drawings: "" }));
+    setDrawingUploadError(null);
+    if (drawingFileRef.current) {
+      drawingFileRef.current.value = "";
+    }
+  };
+
+  const handleCertificateFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setCertificateUploadError(null);
+    setError(null);
+
+    try {
+      setCertificateUploading(true);
+      const { url } = await uploadDrawingPdfRequest(file);
+      setForm((prev) => ({ ...prev, certificate_src: url }));
+    } catch (uploadErr) {
+      setCertificateUploadError(uploadErr.message);
+    } finally {
+      setCertificateUploading(false);
+      event.target.value = "";
+    }
+  };
+
+  const clearStoredCertificate = () => {
+    setForm((prev) => ({ ...prev, certificate_src: "" }));
+    setCertificateUploadError(null);
+    if (certificateFileRef.current) {
+      certificateFileRef.current.value = "";
+    }
+  };
+
+  const handleListingPhotoChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setPhotoUploadError(null);
+    setError(null);
+
+    try {
+      setPhotoUploading(true);
+      const { url } = await uploadListingPhotoRequest(file);
+      setForm((prev) => ({ ...prev, image_src: url }));
+    } catch (photoErr) {
+      setPhotoUploadError(photoErr.message);
+    } finally {
+      setPhotoUploading(false);
+      event.target.value = "";
+    }
+  };
+
+  const clearListingPhoto = () => {
+    setForm((prev) => ({ ...prev, image_src: "" }));
+    setPhotoUploadError(null);
+    if (listingPhotoRef.current) {
+      listingPhotoRef.current.value = "";
+    }
   };
 
   const getStepErrors = (step) => {
@@ -114,24 +246,8 @@ const CreateBeamPage = () => {
     }
 
     if (step === 1) {
-      ["title", "beam_type", "profile_name", "steel_grade", "condition", "location"].forEach((name) => {
-        if (!String(form[name] || "").trim()) {
-          nextErrors[name] = requiredMessage;
-        }
-      });
-    }
-
-    if (step === 2) {
-      ["length_mm", "quantity"].forEach((name) => {
-        if (!String(form[name] || "").trim()) {
-          nextErrors[name] = requiredMessage;
-        }
-      });
-    }
-
-    if (step === 3) {
-      if (!String(form.price_eur || "").trim()) {
-        nextErrors.price_eur = requiredMessage;
+      if (!String(form.title || "").trim()) {
+        nextErrors.title = requiredMessage;
       }
     }
 
@@ -178,9 +294,30 @@ const CreateBeamPage = () => {
     return <span className={styles.fieldError}>{fieldErrors[name]}</span>;
   };
 
-  const handleSubmit = async (event) => {
+  const handleFormKeyDown = (event) => {
+    if (event.key !== "Enter") {
+      return;
+    }
+    if (event.target?.tagName?.toLowerCase() === "textarea") {
+      return;
+    }
+    if (stepRef.current >= LAST_STEP_INDEX) {
+      return;
+    }
     event.preventDefault();
-    if (!validateStep(currentStep) || !validateStep(0) || !validateStep(1) || !validateStep(2) || !validateStep(3)) {
+    handleNextStep();
+  };
+
+  const handlePublish = async () => {
+    if (stepRef.current !== LAST_STEP_INDEX || currentStep !== LAST_STEP_INDEX) {
+      return;
+    }
+
+    if (submitting) {
+      return;
+    }
+
+    if (!validateStep(currentStep) || !validateStep(0) || !validateStep(1)) {
       return;
     }
 
@@ -195,8 +332,17 @@ const CreateBeamPage = () => {
       setForm(buildInitialState());
       setCurrentStep(0);
       setFieldErrors({});
+      if (drawingFileRef.current) {
+        drawingFileRef.current.value = "";
+      }
+      if (certificateFileRef.current) {
+        certificateFileRef.current.value = "";
+      }
+      if (listingPhotoRef.current) {
+        listingPhotoRef.current.value = "";
+      }
 
-      setTimeout(() => navigate("/beams"), 700);
+      setTimeout(() => navigate("/beams/all"), 700);
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -209,7 +355,7 @@ const CreateBeamPage = () => {
       <h1>{t.title}</h1>
       <p className="muted">{t.subtitle}</p>
 
-      <form className={styles.formCard} onSubmit={handleSubmit}>
+      <form className={styles.formCard} onKeyDown={handleFormKeyDown} noValidate>
         <div className={styles.stepper}>
           {stepDefinitions.map((step, index) => {
             const isCompleted = index < currentStep;
@@ -272,7 +418,7 @@ const CreateBeamPage = () => {
                 {renderError("beam_type")}
               </FormField>
 
-              <FormField htmlFor="profile_name" label="Profilis *">
+              <FormField htmlFor="profile_name" label="Profilis">
                 <input
                   id="profile_name"
                   name="profile_name"
@@ -283,7 +429,7 @@ const CreateBeamPage = () => {
                 {renderError("profile_name")}
               </FormField>
 
-              <FormField htmlFor="steel_grade" label="Plieno klasė *">
+              <FormField htmlFor="steel_grade" label="Plieno klasė">
                 <input
                   id="steel_grade"
                   name="steel_grade"
@@ -294,7 +440,7 @@ const CreateBeamPage = () => {
                 {renderError("steel_grade")}
               </FormField>
 
-              <FormField htmlFor="condition" label="Būklė *">
+              <FormField htmlFor="condition" label="Būklė">
                 <input
                   id="condition"
                   name="condition"
@@ -316,7 +462,7 @@ const CreateBeamPage = () => {
               </FormField>
 
               <div className={styles.fullWidth}>
-                <FormField htmlFor="location" label="Vieta *">
+                <FormField htmlFor="location" label="Vieta">
                   <input
                     id="location"
                     name="location"
@@ -332,7 +478,7 @@ const CreateBeamPage = () => {
 
           {currentStep === 2 && (
             <div className={styles.grid}>
-              <FormField htmlFor="length_mm" label="Ilgis (mm) *">
+              <FormField htmlFor="length_mm" label="Ilgis (mm)">
                 <input
                   id="length_mm"
                   name="length_mm"
@@ -411,7 +557,7 @@ const CreateBeamPage = () => {
                 />
               </FormField>
 
-              <FormField htmlFor="quantity" label="Kiekis *">
+              <FormField htmlFor="quantity" label="Kiekis">
                 <div className={styles.suffixInputWrap}>
                   <input
                     id="quantity"
@@ -444,6 +590,49 @@ const CreateBeamPage = () => {
                 </FormField>
               </div>
 
+              <div className={styles.fullWidth}>
+                <FormField htmlFor="listing-photo" label="Nuotrauka">
+                  <input
+                    ref={listingPhotoRef}
+                    id="listing-photo"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif"
+                    className={styles.hiddenFileInput}
+                    onChange={handleListingPhotoChange}
+                    disabled={photoUploading || submitting}
+                  />
+                  <button
+                    type="button"
+                    className={styles.uploadPlaceholder}
+                    onClick={() => listingPhotoRef.current?.click()}
+                    disabled={photoUploading || submitting}
+                  >
+                    <div className={styles.uploadIcon}>↑</div>
+                    <p>{photoUploading ? "Įkeliama…" : "Paspauskite ir pasirinkite nuotrauką"}</p>
+                    <small>JPG, PNG, WEBP arba GIF, iki 10 MB</small>
+                  </button>
+                  {photoUploadError && (
+                    <span className={styles.fieldError} role="alert">
+                      {photoUploadError}
+                    </span>
+                  )}
+                  {form.image_src ? (
+                    <div className={styles.photoPreviewBlock}>
+                      <img
+                        src={publicFileUrl(form.image_src)}
+                        alt="Skelbimo nuotrauka"
+                        className={styles.photoPreview}
+                      />
+                      <div className={styles.uploadMeta}>
+                        <button type="button" className={styles.clearDrawingBtn} onClick={clearListingPhoto}>
+                          Pašalinti nuotrauką
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
+                </FormField>
+              </div>
+
               <FormField htmlFor="defects" label="Defektai">
                 <textarea
                   id="defects"
@@ -464,23 +653,103 @@ const CreateBeamPage = () => {
                 />
               </FormField>
 
-              <FormField htmlFor="drawings" label="Brėžiniai / failai">
-                <div className={styles.uploadPlaceholder}>
+              <FormField htmlFor="drawing-file" label="Brėžiniai / failai (PDF)">
+                <input
+                  ref={drawingFileRef}
+                  id="drawing-file"
+                  type="file"
+                  accept="application/pdf,.pdf"
+                  className={styles.hiddenFileInput}
+                  onChange={handleDrawingFileChange}
+                  disabled={drawingUploading || submitting}
+                />
+                <button
+                  type="button"
+                  className={styles.uploadPlaceholder}
+                  onClick={() => drawingFileRef.current?.click()}
+                  disabled={drawingUploading || submitting}
+                >
                   <div className={styles.uploadIcon}>↑</div>
-                  <p>Įkelkite brėžinius</p>
-                  <small>PDF, DWG, JPG (maks. 10 MB)</small>
-                </div>
+                  <p>{drawingUploading ? "Įkeliama…" : "Paspauskite ir pasirinkite PDF"}</p>
+                  <small>Tik PDF formatas, iki 10 MB</small>
+                </button>
+                {drawingUploadError && (
+                  <span className={styles.fieldError} role="alert">
+                    {drawingUploadError}
+                  </span>
+                )}
+                {form.drawings ? (
+                  <div className={styles.uploadMeta}>
+                    <a
+                      href={publicFileUrl(form.drawings)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.uploadLink}
+                    >
+                      Peržiūrėti įkeltą PDF
+                    </a>
+                    <button type="button" className={styles.clearDrawingBtn} onClick={clearStoredDrawing}>
+                      Pašalinti
+                    </button>
+                  </div>
+                ) : null}
+                <label htmlFor="drawings" className={styles.optionalLinkLabel}>
+                  Arba įveskite nuorodą / užrašą (nebūtina)
+                </label>
                 <input
                   id="drawings"
                   name="drawings"
                   value={form.drawings}
                   onChange={handleChange}
                   className={styles.input}
-                  placeholder="Nuoroda arba failo pavadinimas (nebūtina)"
+                  placeholder="Pvz. nuoroda į išorinį failą"
+                  disabled={drawingUploading}
                 />
               </FormField>
 
-              <FormField htmlFor="price_eur" label="Kaina (EUR) *">
+              <FormField htmlFor="certificate-file" label="Sertifikatas (PDF)">
+                <input
+                  ref={certificateFileRef}
+                  id="certificate-file"
+                  type="file"
+                  accept="application/pdf,.pdf"
+                  className={styles.hiddenFileInput}
+                  onChange={handleCertificateFileChange}
+                  disabled={certificateUploading || submitting}
+                />
+                <button
+                  type="button"
+                  className={styles.uploadPlaceholder}
+                  onClick={() => certificateFileRef.current?.click()}
+                  disabled={certificateUploading || submitting}
+                >
+                  <div className={styles.uploadIcon}>↑</div>
+                  <p>{certificateUploading ? "Įkeliama…" : "Paspauskite ir pasirinkite sertifikato PDF"}</p>
+                  <small>Tik PDF formatas, iki 10 MB</small>
+                </button>
+                {certificateUploadError && (
+                  <span className={styles.fieldError} role="alert">
+                    {certificateUploadError}
+                  </span>
+                )}
+                {form.certificate_src ? (
+                  <div className={styles.uploadMeta}>
+                    <a
+                      href={publicFileUrl(form.certificate_src)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.uploadLink}
+                    >
+                      Peržiūrėti įkeltą sertifikatą
+                    </a>
+                    <button type="button" className={styles.clearDrawingBtn} onClick={clearStoredCertificate}>
+                      Pašalinti
+                    </button>
+                  </div>
+                ) : null}
+              </FormField>
+
+              <FormField htmlFor="price_eur" label="Kaina (EUR)">
                 <input
                   id="price_eur"
                   name="price_eur"
@@ -514,7 +783,7 @@ const CreateBeamPage = () => {
               Kitas žingsnis
             </Button>
           ) : (
-            <Button type="submit" disabled={submitting}>
+            <Button type="button" onClick={handlePublish} disabled={submitting}>
               {submitting ? t.saving : "Paskelbti skelbimą"}
             </Button>
           )}

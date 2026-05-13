@@ -1,11 +1,14 @@
 require("dotenv").config();
 
+const path = require("path");
+
 const express = require("express");
 const cors = require("cors");
 
 const healthRoutes = require("./routes/healthRoutes");
 const authRoutes = require("./routes/authRoutes");
 const beamRoutes = require("./routes/beamRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
 const constructionReviewRoutes = require("./routes/constructionReviewRoutes");
 const { notFound } = require("./middleware/notFound");
 const { errorHandler } = require("./middleware/errorHandler");
@@ -17,8 +20,17 @@ const port = Number(process.env.PORT || 4000);
 app.use(cors());
 app.use(express.json());
 
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"), {
+    fallthrough: true,
+    index: false
+  })
+);
+
 app.use("/", healthRoutes);
 app.use("/auth", authRoutes);
+app.use("/api/uploads", uploadRoutes);
 app.use("/beams", beamRoutes);
 app.use("/constructions", constructionReviewRoutes);
 

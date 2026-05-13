@@ -64,7 +64,7 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #2e7d32;
+  color: #0f3d2e;
 }
 
 .hero h1 {
@@ -98,14 +98,14 @@
 }
 
 .primaryButton {
-  background: #2e7d32;
+  background: #0f3d2e;
   color: #ffffff;
-  box-shadow: 0 8px 18px rgba(46, 125, 50, 0.28);
+  box-shadow: 0 8px 18px rgba(15, 61, 46, 0.28);
 }
 
 .primaryButton:hover {
   text-decoration: none;
-  background: #43a047;
+  background: #0b3024;
   transform: translateY(-1px);
 }
 
@@ -192,7 +192,7 @@
 .statsValue {
   font-size: clamp(30px, 5vw, 42px);
   font-weight: 700;
-  color: #2e7d32;
+  color: #0f3d2e;
 }
 
 .statsDescription {
@@ -241,8 +241,8 @@
 }
 
 .solutionActive {
-  background: rgba(34, 197, 94, 0.22);
-  color: #15803d;
+  background: rgba(15, 61, 46, 0.22);
+  color: #0f3d2e;
 }
 
 .togglePanels {
@@ -282,9 +282,9 @@
 }
 
 .panelFocusSolution {
-  border-color: rgba(34, 197, 94, 0.4);
-  background: rgba(34, 197, 94, 0.12);
-  box-shadow: 0 10px 24px rgba(34, 197, 94, 0.12);
+  border-color: rgba(15, 61, 46, 0.4);
+  background: rgba(15, 61, 46, 0.12);
+  box-shadow: 0 10px 24px rgba(15, 61, 46, 0.12);
 }
 
 .stepsRow {
@@ -311,7 +311,7 @@
   place-items: center;
   font-weight: 700;
   color: #ffffff;
-  background: linear-gradient(180deg, #66bb6a 0%, #2e7d32 100%);
+  background: linear-gradient(180deg, #2e6b57 0%, #0f3d2e 100%);
   margin: 0 auto;
 }
 
@@ -334,10 +334,40 @@
   font-weight: 700;
 }
 
-.productsGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+.productsState {
+  margin: 0;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.productsCarousel {
+  position: relative;
+}
+
+.productsTrack {
+  display: flex;
   gap: 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 4px 2px 12px;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.productsTrack::-webkit-scrollbar {
+  height: 8px;
+}
+
+.productsTrack::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.productCardLink {
+  flex: 0 0 min(280px, 82vw);
+  scroll-snap-align: start;
+  text-decoration: none;
+  color: inherit;
 }
 
 .productCard {
@@ -347,18 +377,59 @@
   overflow: hidden;
   box-shadow: 0 10px 24px rgba(31, 41, 55, 0.08);
   transition: transform 180ms ease, box-shadow 180ms ease;
+  height: 100%;
 }
 
-.productCard:hover {
+.productCardLink:hover .productCard {
   transform: translateY(-3px) scale(1.01);
   box-shadow: 0 16px 30px rgba(31, 41, 55, 0.14);
 }
 
-.productCard img {
+.productMedia {
   width: 100%;
-  height: 128px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.productMedia img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.carouselBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid #e2e8e4;
+  background: #ffffff;
+  color: #0f3d2e;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(31, 41, 55, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0 2px;
+}
+
+.carouselBtn:hover {
+  background: #f8fafc;
+}
+
+.carouselBtnLeft {
+  left: 4px;
+}
+
+.carouselBtnRight {
+  right: 4px;
 }
 
 .productBody {
@@ -394,7 +465,7 @@
 
 .price {
   margin: 12px 0 0 0;
-  color: #2e7d32;
+  color: #0f3d2e;
   font-size: 18px;
   font-weight: 700;
 }
@@ -420,7 +491,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(46, 125, 50, 0.15) 0%, rgba(31, 41, 55, 0.32) 100%);
+  background: linear-gradient(180deg, rgba(15, 61, 46, 0.15) 0%, rgba(31, 41, 55, 0.32) 100%);
 }
 
 .impactImageWrap img {
@@ -451,7 +522,7 @@
 
 .impactStatCard h3 {
   margin: 0;
-  color: #2e7d32;
+  color: #0f3d2e;
   font-size: 30px;
 }
 
@@ -466,7 +537,7 @@
   text-align: center;
   background: linear-gradient(120deg, #ecf7ed 0%, #f3faf3 100%);
   border: 1px solid #d8e6d8;
-  box-shadow: 0 10px 26px rgba(46, 125, 50, 0.12);
+  box-shadow: 0 10px 26px rgba(15, 61, 46, 0.12);
 }
 
 .finalCta h2 {
@@ -539,7 +610,6 @@
   .statsGrid,
   .togglePanels,
   .stepsRow,
-  .productsGrid,
   .impactSection,
   .impactStats {
     grid-template-columns: 1fr;

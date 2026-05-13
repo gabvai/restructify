@@ -2,9 +2,11 @@ import { Navigate, Route, Routes } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout.jsx";
 import AllListingsPage from "../pages/AllListingsPage.jsx";
+import BeamDetailsPage from "../pages/BeamDetailsPage.jsx";
 import CreateBeamPage from "../pages/CreateBeamPage.jsx";
 import EducationPage from "../pages/EducationPage.jsx";
 import HomePage from "../pages/HomePage.jsx";
+import InspectionsPage from "../pages/InspectionsPage.jsx";
 import LoginPage from "../pages/LoginPage.jsx";
 import MyListingsPage from "../pages/MyListingsPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
@@ -25,7 +27,10 @@ const AppRoutes = () => {
       >
         <Route path="/" element={<HomePage />} />
         <Route path="/education" element={<EducationPage />} />
+        <Route path="/inspections" element={<InspectionsPage />} />
         <Route path="/beams/all" element={<AllListingsPage />} />
+        <Route path="/beams/seller/:sellerId" element={<AllListingsPage />} />
+        <Route path="/beams/all/:id" element={<BeamDetailsPage />} />
         <Route path="/beams" element={<MyListingsPage />} />
         <Route path="/beams/new" element={<CreateBeamPage />} />
       </Route>

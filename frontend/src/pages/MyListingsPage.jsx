@@ -32,6 +32,14 @@ const formatPrice = (value) => {
   return `€${parsed.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
 
+const hasCertificate = (beam) => {
+  if (typeof beam?.has_certificate === "boolean") {
+    return beam.has_certificate;
+  }
+
+  return Boolean(String(beam?.certificate_src || "").trim());
+};
+
 const MyListingsPage = () => {
   const [beams, setBeams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -87,8 +95,18 @@ const MyListingsPage = () => {
 
       {!loading && !error && beams.length > 0 && (
         <ul className={styles.list}>
-          {beams.map((beam) => (
+          {beams.map((beam) => {
+            const certificatePresent = hasCertificate(beam);
+
+            return (
             <li key={beam.id} className={styles.card}>
+              <div className={styles.cardMedia}>
+                <img
+                  src={beam.image_src || "/tab-logo.png"}
+                  alt={beam.title || t.untitledBeam}
+                  className={styles.cardImage}
+                />
+              </div>
               <div className={styles.cardHeader}>
                 <h3 className={styles.title}>{beam.title || t.untitledBeam}</h3>
                 <span className={styles.price}>{formatPrice(beam.price_eur)}</span>
@@ -114,9 +132,25 @@ const MyListingsPage = () => {
               </dl>
 
               <div className={styles.cardActions}>
-                <Button variant="ghost" onClick={() => {}}>
-                  {t.view}
-                </Button>
+                <Link to={`/beams/all/${beam.id}`}>
+                  <Button variant="ghost">{t.view}</Button>
+                </Link>
+                <button
+                  type="button"
+                  className={`${styles.certificateButton} ${
+                    certificatePresent ? styles.certificateYes : styles.certificateNo
+                  }`}
+                >
+                  <span className={styles.certificateLabel}>
+                    <span
+                      aria-hidden
+                      className={certificatePresent ? styles.certificateIconYes : styles.certificateIconNo}
+                    >
+                      {certificatePresent ? "✓" : "✕"}
+                    </span>
+                    {certificatePresent ? t.withCertificate : t.withoutCertificate}
+                  </span>
+                </button>
                 <Button
                   variant="secondary"
                   onClick={() =>
@@ -132,7 +166,8 @@ const MyListingsPage = () => {
                 </Button>
               </div>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </section>

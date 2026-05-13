@@ -1,37 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 import Button from "../components/Button.jsx";
-import { listAllBeamsRequest } from "../api/beams.js";
+import { listAllBeamsRequest, listSellerBeamsRequest } from "../api/beams.js";
 import { useCart } from "../context/CartContext.jsx";
 import { translations } from "../i18n/translations.js";
-import productImage1 from "../assets/images/product-1.png";
-import productImage2 from "../assets/images/product-2.png";
-import productImage3 from "../assets/images/product-3.png";
-import productImage4 from "../assets/images/product-4.png";
 import styles from "./MyListingsPage.module.css";
 
 const t = translations.listings;
 const allT = translations.allListings;
 const common = translations.common;
-const homeT = translations.home;
-const demoProductImages = [productImage1, productImage2, productImage3, productImage4];
-
-const parsePriceValue = (priceText) => {
-  const normalized = String(priceText).replace(/[^\d.,]/g, "").replace(",", ".");
-  const parsed = Number(normalized);
-  return Number.isNaN(parsed) ? null : parsed;
-};
-
-const fakeBeams = homeT.products.map((product, index) => ({
-  id: `fake-${index + 1}`,
-  title: product.name,
-  profile_name: product.name,
-  length_mm: Number(product.length.replace(/[^\d.,]/g, "").replace(",", ".")) * 1000,
-  condition: "used",
-  location: "Lietuva",
-  price_eur: parsePriceValue(product.price),
-  image_src: demoProductImages[index] ?? demoProductImages[0]
-}));
 
 const formatNumber = (value) => {
   if (value === null || value === undefined || value === "") {
@@ -55,7 +33,16 @@ const formatPrice = (value) => {
   return `€${parsed.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 };
 
+const hasCertificate = (beam) => {
+  if (typeof beam?.has_certificate === "boolean") {
+    return beam.has_certificate;
+  }
+
+  return Boolean(String(beam?.certificate_src || "").trim());
+};
+
 const AllListingsPage = () => {
+  const { sellerId } = useParams();
   const [beams, setBeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -66,17 +53,15 @@ const AllListingsPage = () => {
     setError(null);
 
     try {
-      const data = await listAllBeamsRequest();
-      const realBeams = Array.isArray(data) ? data : [];
-      setBeams([...fakeBeams, ...realBeams]);
+      const data = sellerId ? await listSellerBeamsRequest(sellerId) : await listAllBeamsRequest();
+      setBeams(Array.isArray(data) ? data : []);
     } catch (requestError) {
       setError(requestError.message);
-      // Keep demo data visible even if backend call fails.
-      setBeams(fakeBeams);
+      setBeams([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [sellerId]);
 
   useEffect(() => {
     loadBeams();
@@ -86,7 +71,7 @@ const AllListingsPage = () => {
     <section>
       <div className={styles.header}>
         <div>
-          <h1>{allT.title}</h1>
+          <h1>{sellerId ? "Pardavėjo skelbimai" : allT.title}</h1>
           <p className="muted">{allT.subtitle}</p>
         </div>
         <Button variant="secondary" onClick={() => {}}>
@@ -109,13 +94,18 @@ const AllListingsPage = () => {
 
       {!loading && beams.length > 0 && (
         <ul className={styles.list}>
-          {beams.map((beam) => (
+          {beams.map((beam) => {
+            const certificatePresent = hasCertificate(beam);
+
+            return (
             <li key={beam.id} className={styles.card}>
-              <img
-                src={beam.image_src || demoProductImages[0]}
-                alt={beam.title || t.untitledBeam}
-                className={styles.cardImage}
-              />
+              <div className={styles.cardMedia}>
+                <img
+                  src={beam.image_src || "/tab-logo.png"}
+                  alt={beam.title || t.untitledBeam}
+                  className={styles.cardImage}
+                />
+              </div>
 
               <div className={styles.cardHeader}>
                 <h3 className={styles.title}>{beam.title || t.untitledBeam}</h3>
@@ -142,9 +132,25 @@ const AllListingsPage = () => {
               </dl>
 
               <div className={styles.cardActions}>
-                <Button variant="ghost" onClick={() => {}}>
-                  {t.view}
-                </Button>
+                <Link to={`/beams/all/${beam.id}`}>
+                  <Button variant="ghost">{t.view}</Button>
+                </Link>
+                <button
+                  type="button"
+                  className={`${styles.certificateButton} ${
+                    certificatePresent ? styles.certificateYes : styles.certificateNo
+                  }`}
+                >
+                  <span className={styles.certificateLabel}>
+                    <span
+                      aria-hidden
+                      className={certificatePresent ? styles.certificateIconYes : styles.certificateIconNo}
+                    >
+                      {certificatePresent ? "✓" : "✕"}
+                    </span>
+                    {certificatePresent ? t.withCertificate : t.withoutCertificate}
+                  </span>
+                </button>
                 <Button
                   variant="secondary"
                   onClick={() =>
@@ -152,7 +158,7 @@ const AllListingsPage = () => {
                       id: beam.id,
                       title: beam.title || t.untitledBeam,
                       price_eur: beam.price_eur,
-                      image_src: beam.image_src || demoProductImages[0]
+                      image_src: beam.image_src || "/tab-logo.png"
                     })
                   }
                 >
@@ -160,7 +166,8 @@ const AllListingsPage = () => {
                 </Button>
               </div>
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </section>
