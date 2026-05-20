@@ -239,6 +239,9 @@
 }
 
 .sellerCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
@@ -248,8 +251,12 @@
 
 .sellerTop {
   display: flex;
-  gap: 12px;
+  gap: 20px;
   align-items: center;
+}
+
+.sellerInfo {
+  min-width: 0;
 }
 
 .logo {
@@ -296,27 +303,43 @@
   text-decoration: none;
 }
 
-.modalBackdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 61, 46, 0.25);
+.sellerContact {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
   display: grid;
-  place-items: center;
-  padding: 16px;
-  z-index: 30;
+  gap: 10px;
 }
 
-.modal {
-  width: min(420px, 100%);
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+.sellerContact h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #111827;
 }
 
-.modal h3 {
-  margin: 0 0 8px;
+.sellerContact p {
+  margin: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.sellerContact p span {
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sellerContact a {
+  color: #0f3d2e;
+  text-decoration: none;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.sellerContact a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 1100px) {

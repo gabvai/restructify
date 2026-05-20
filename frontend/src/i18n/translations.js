@@ -86,7 +86,13 @@ export const translations = {
   allListings: {
     title: "Visi skelbimai",
     subtitle: "Peržiūrėkite visas šiuo metu paskelbtas konstrukcijas.",
-    filter: "Filtruoti"
+    filter: "Filtruoti",
+    filterType: "Konstrukcijos tipas",
+    filterTypeAll: "Visi tipai",
+    filterCertificate: "Sertifikatas",
+    filterCertificateAll: "Visi",
+    filterClear: "Išvalyti filtrus",
+    filterNoResults: "Pagal pasirinktus filtrus skelbimų nerasta."
   },
   inspections: {
     title: "Konstrukcijų patikrinimai",

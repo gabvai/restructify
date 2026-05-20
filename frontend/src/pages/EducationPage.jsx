@@ -135,20 +135,22 @@ const EducationPage = () => {
           </div>
         </article>
 
-        <ImageChoiceCard
-          title="Atspėk būklę"
-          imageSrc={steelStructureImage}
-          imageAlt="Rūdžių paveikta plieninė sija"
-          question="Kaip vertini šią konstrukciją?"
-          choices={conditionChoices}
-          selectedId={conditionAnswer}
-          onSelect={setConditionAnswer}
-          explanation={
-            selectedCondition?.isCorrect
-              ? "Teisingai. Esant paviršinei korozijai, konstrukcija dažnai gali būti naudojama po valymo ir įvertinimo."
-              : "Ne visada. Jei pažeidimas paviršinis, po valymo ir inžinerinio įvertinimo konstrukcija dažnai būna tinkama."
-          }
-        />
+        <div className={styles.conditionGuess}>
+          <ImageChoiceCard
+            title="Atspėk būklę"
+            imageSrc={steelStructureImage}
+            imageAlt="Rūdžių paveikta plieninė sija"
+            question="Kaip vertini šią konstrukciją?"
+            choices={conditionChoices}
+            selectedId={conditionAnswer}
+            onSelect={setConditionAnswer}
+            explanation={
+              selectedCondition?.isCorrect
+                ? "Teisingai. Esant paviršinei korozijai, konstrukcija dažnai gali būti naudojama po valymo ir įvertinimo."
+                : "Ne visada. Jei pažeidimas paviršinis, po valymo ir inžinerinio įvertinimo konstrukcija dažnai būna tinkama."
+            }
+          />
+        </div>
 
         <div className={styles.plainChecklist}>
           <Checklist

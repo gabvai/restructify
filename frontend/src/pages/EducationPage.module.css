@@ -218,6 +218,46 @@
   color: #3f4f3f;
 }
 
+.conditionGuess {
+  grid-column: 1 / -1;
+}
+
+.conditionGuess :global(.edu-image-choice-card h2) {
+  margin: 0 0 16px;
+  text-align: center;
+}
+
+.conditionGuess :global(.edu-image-choice-layout) {
+  display: grid;
+  grid-template-columns: minmax(280px, 1.1fr) minmax(260px, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.conditionGuess :global(.edu-image-choice-card .edu-image-wrap) {
+  margin-bottom: 0;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f8f6;
+}
+
+.conditionGuess :global(.edu-image-choice-card .edu-image-wrap img) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 420px;
+  margin: 0;
+  object-fit: contain;
+}
+
+.conditionGuess :global(.edu-image-choice-content) {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
 .plainChecklist :global(.edu-card) {
   background: transparent;
   border: 0;
@@ -533,5 +573,17 @@
 
   .centeredSectionTitle {
     font-size: clamp(22px, 5vw, 30px);
+  }
+
+  .conditionGuess :global(.edu-image-choice-layout) {
+    grid-template-columns: 1fr;
+  }
+
+  .conditionGuess :global(.edu-image-choice-card .edu-image-wrap) {
+    min-height: 240px;
+  }
+
+  .conditionGuess :global(.edu-image-choice-card .edu-image-wrap img) {
+    max-height: 320px;
   }
 }

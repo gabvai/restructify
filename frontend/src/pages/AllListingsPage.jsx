@@ -1,15 +1,18 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import Button from "../components/Button.jsx";
 import { listAllBeamsRequest, listSellerBeamsRequest } from "../api/beams.js";
 import { useCart } from "../context/CartContext.jsx";
 import { translations } from "../i18n/translations.js";
+import filterStyles from "./AllListingsPage.module.css";
 import styles from "./MyListingsPage.module.css";
 
 const t = translations.listings;
 const allT = translations.allListings;
 const common = translations.common;
+
+const BEAM_TYPES = ["Sija", "Kolona", "Santvara"];
 
 const formatNumber = (value) => {
   if (value === null || value === undefined || value === "") {
@@ -46,7 +49,30 @@ const AllListingsPage = () => {
   const [beams, setBeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [beamTypeFilter, setBeamTypeFilter] = useState("");
+  const [certificateFilter, setCertificateFilter] = useState("all");
   const { addToCart } = useCart();
+
+  const hasActiveFilters = beamTypeFilter !== "" || certificateFilter !== "all";
+
+  const filteredBeams = useMemo(() => {
+    return beams.filter((beam) => {
+      if (beamTypeFilter && beam.beam_type !== beamTypeFilter) {
+        return false;
+      }
+
+      const certificatePresent = hasCertificate(beam);
+      if (certificateFilter === "yes" && !certificatePresent) {
+        return false;
+      }
+      if (certificateFilter === "no" && certificatePresent) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [beams, beamTypeFilter, certificateFilter]);
 
   const loadBeams = useCallback(async () => {
     setLoading(true);
@@ -67,6 +93,11 @@ const AllListingsPage = () => {
     loadBeams();
   }, [loadBeams]);
 
+  const clearFilters = () => {
+    setBeamTypeFilter("");
+    setCertificateFilter("all");
+  };
+
   return (
     <section>
       <div className={styles.header}>
@@ -74,10 +105,72 @@ const AllListingsPage = () => {
           <h1>{sellerId ? "Pardavėjo skelbimai" : allT.title}</h1>
           <p className="muted">{allT.subtitle}</p>
         </div>
-        <Button variant="secondary" onClick={() => {}}>
+        <Button variant="secondary" onClick={() => setFilterOpen((open) => !open)}>
           {allT.filter}
         </Button>
       </div>
+
+      {filterOpen && (
+        <div className={filterStyles.filterPanel}>
+          <div className={filterStyles.filterRow}>
+            <span className={filterStyles.filterLabel}>{allT.filterType}</span>
+            <select
+              id="beam-type-filter"
+              className={filterStyles.filterSelect}
+              value={beamTypeFilter}
+              onChange={(event) => setBeamTypeFilter(event.target.value)}
+            >
+              <option value="">{allT.filterTypeAll}</option>
+              {BEAM_TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className={filterStyles.filterRow}>
+            <span className={filterStyles.filterLabel}>{allT.filterCertificate}</span>
+            <div className={filterStyles.certificateOptions} role="group" aria-label={allT.filterCertificate}>
+              <button
+                type="button"
+                className={`${filterStyles.certificateOption} ${
+                  certificateFilter === "all" ? filterStyles.certificateOptionActive : ""
+                }`}
+                onClick={() => setCertificateFilter("all")}
+              >
+                {allT.filterCertificateAll}
+              </button>
+              <button
+                type="button"
+                className={`${filterStyles.certificateOption} ${
+                  certificateFilter === "yes" ? filterStyles.certificateOptionActive : ""
+                }`}
+                onClick={() => setCertificateFilter("yes")}
+              >
+                {t.withCertificate}
+              </button>
+              <button
+                type="button"
+                className={`${filterStyles.certificateOption} ${
+                  certificateFilter === "no" ? filterStyles.certificateOptionActive : ""
+                }`}
+                onClick={() => setCertificateFilter("no")}
+              >
+                {t.withoutCertificate}
+              </button>
+            </div>
+          </div>
+
+          {hasActiveFilters && (
+            <div className={filterStyles.filterActions}>
+              <button type="button" className={filterStyles.filterClear} onClick={clearFilters}>
+                {allT.filterClear}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {loading && <div className={styles.state}>{t.loading}</div>}
 
@@ -90,11 +183,15 @@ const AllListingsPage = () => {
         </div>
       )}
 
-      {!loading && beams.length === 0 && <div className={styles.state}>{t.emptyPrefix}</div>}
+      {!loading && beams.length === 0 && !error && <div className={styles.state}>{t.emptyPrefix}</div>}
 
-      {!loading && beams.length > 0 && (
+      {!loading && beams.length > 0 && filteredBeams.length === 0 && (
+        <div className={styles.state}>{allT.filterNoResults}</div>
+      )}
+
+      {!loading && filteredBeams.length > 0 && (
         <ul className={styles.list}>
-          {beams.map((beam) => {
+          {filteredBeams.map((beam) => {
             const certificatePresent = hasCertificate(beam);
 
             return (

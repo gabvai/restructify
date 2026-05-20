@@ -38,7 +38,6 @@ const BeamDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("description");
-  const [contactOpen, setContactOpen] = useState(false);
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -176,9 +175,6 @@ const BeamDetailsPage = () => {
             >
               I krepseli
             </button>
-            <button type="button" className={styles.secondaryBtn} onClick={() => setContactOpen(true)}>
-              Susisiekti su pardaveju
-            </button>
           </div>
         </div>
       </div>
@@ -203,28 +199,34 @@ const BeamDetailsPage = () => {
         <aside className={styles.sellerCard}>
           <div className={styles.sellerTop}>
             <div className={styles.logo}>{(beam.seller_name || "P").slice(0, 1).toUpperCase()}</div>
-            <div>
+            <div className={styles.sellerInfo}>
               <h3>{beam.seller_name || "Pardavejas"}</h3>
-              <p className={styles.sellerEmail}>{beam.seller_email || "-"}</p>
             </div>
           </div>
           <Link to={`/beams/seller/${beam.user_id}`} className={styles.sellerListingsLink}>
             Perziureti visus skelbimus
           </Link>
+          <div className={styles.sellerContact}>
+            <h4>Susisiekimas su pardaveju</h4>
+            <p>
+              <span>El. paštas</span>
+              {beam.seller_email ? (
+                <a href={`mailto:${beam.seller_email}`}>{beam.seller_email}</a>
+              ) : (
+                "-"
+              )}
+            </p>
+            <p>
+              <span>Tel.</span>
+              {beam.seller_phone ? (
+                <a href={`tel:${beam.seller_phone}`}>{beam.seller_phone}</a>
+              ) : (
+                "-"
+              )}
+            </p>
+          </div>
         </aside>
       </div>
-
-      {contactOpen && (
-        <div className={styles.modalBackdrop} onClick={() => setContactOpen(false)}>
-          <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
-            <h3>Pardavejo kontaktas</h3>
-            <p>{beam.seller_email || "-"}</p>
-            <button type="button" className={styles.secondaryBtn} onClick={() => setContactOpen(false)}>
-              Uzverti
-            </button>
-          </div>
-        </div>
-      )}
     </section>
   );
 };

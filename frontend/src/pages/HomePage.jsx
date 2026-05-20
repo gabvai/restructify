@@ -214,7 +214,7 @@ const HomePage = () => {
               <Link to="/beams/new" className={styles.primaryButton}>
                 {t.heroPrimaryCta}
               </Link>
-              <Link to="/beams" className={styles.secondaryButton}>
+              <Link to="/beams/all" className={styles.secondaryButton}>
                 {t.heroSecondaryCta}
               </Link>
             </div>
