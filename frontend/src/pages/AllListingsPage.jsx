@@ -5,6 +5,7 @@ import Button from "../components/Button.jsx";
 import { listAllBeamsRequest, listSellerBeamsRequest } from "../api/beams.js";
 import { useCart } from "../context/CartContext.jsx";
 import { translations } from "../i18n/translations.js";
+import { formatBeamCondition } from "../utils/beamCondition.js";
 import filterStyles from "./AllListingsPage.module.css";
 import styles from "./MyListingsPage.module.css";
 
@@ -220,7 +221,7 @@ const AllListingsPage = () => {
                 </div>
                 <div>
                   <dt>{t.condition}</dt>
-                  <dd>{beam.condition || common.emptyValue}</dd>
+                  <dd>{formatBeamCondition(beam.condition, common.emptyValue)}</dd>
                 </div>
                 <div>
                   <dt>{t.location}</dt>

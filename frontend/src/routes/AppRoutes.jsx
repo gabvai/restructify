@@ -33,6 +33,7 @@ const AppRoutes = () => {
         <Route path="/beams/all/:id" element={<BeamDetailsPage />} />
         <Route path="/beams" element={<MyListingsPage />} />
         <Route path="/beams/new" element={<CreateBeamPage />} />
+        <Route path="/beams/:id/edit" element={<CreateBeamPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,6 +1,11 @@
 .page {
-  background: #f3f3f3;
-  padding: 8px 0 24px;
+  padding: 0 0 var(--space-5);
+}
+
+.state {
+  padding: var(--space-5);
+  text-align: center;
+  color: var(--color-text-muted);
 }
 
 .formCard {
@@ -11,9 +16,9 @@
   flex-direction: column;
   gap: 18px;
   background: #ffffff;
-  border: 1px solid #d8d2c5;
-  border-radius: 16px;
-  box-shadow: 0 12px 26px rgba(31, 41, 55, 0.08);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: none;
   padding: 22px;
 }
 

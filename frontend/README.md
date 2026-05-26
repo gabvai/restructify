@@ -25,7 +25,7 @@ The app runs at `http://localhost:5173` and talks to the backend at
 To override the backend URL, create a `.env` file (see `.env.example`):
 
 ```
-VITE_API_BASE_URL=http://localhost:4000
+VITE_API_URL=http://localhost:4000
 ```
 
 Make sure the backend is running: `cd backend && npm run dev`.

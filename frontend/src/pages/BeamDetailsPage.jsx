@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { getBeamPublicRequest } from "../api/beams.js";
+import { formatBeamCondition } from "../utils/beamCondition.js";
 import { useCart } from "../context/CartContext.jsx";
 import styles from "./BeamDetailsPage.module.css";
 
@@ -64,7 +65,7 @@ const BeamDetailsPage = () => {
       ["Aukstis", formatValue(beam?.height_mm, "mm")],
       ["Plotis", formatValue(beam?.width_mm, "mm")],
       ["Plieno klase", beam?.steel_grade || "-"],
-      ["Bukle", beam?.condition || "-"],
+      ["Bukle", formatBeamCondition(beam?.condition, "-")],
       ["Kiekis", formatValue(beam?.quantity, "vnt.")],
       ["Vieta", beam?.location || "-"]
     ],

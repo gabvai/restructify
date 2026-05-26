@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import Button from "../components/Button.jsx";
-import { listBeamsRequest } from "../api/beams.js";
+import { deleteBeamRequest, listBeamsRequest } from "../api/beams.js";
 import { useCart } from "../context/CartContext.jsx";
 import { translations } from "../i18n/translations.js";
+import { formatBeamCondition } from "../utils/beamCondition.js";
 import styles from "./MyListingsPage.module.css";
 
 const t = translations.listings;
@@ -44,6 +45,7 @@ const MyListingsPage = () => {
   const [beams, setBeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
   const { addToCart } = useCart();
 
   const loadBeams = useCallback(async () => {
@@ -63,6 +65,24 @@ const MyListingsPage = () => {
   useEffect(() => {
     loadBeams();
   }, [loadBeams]);
+
+  const handleDelete = async (beam) => {
+    if (!window.confirm(t.deleteConfirm)) {
+      return;
+    }
+
+    setDeletingId(beam.id);
+    setError(null);
+
+    try {
+      await deleteBeamRequest(beam.id);
+      setBeams((prev) => prev.filter((item) => item.id !== beam.id));
+    } catch (requestError) {
+      setError(requestError.message || t.deleteError);
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   return (
     <section>
@@ -123,7 +143,7 @@ const MyListingsPage = () => {
                 </div>
                 <div>
                   <dt>{t.condition}</dt>
-                  <dd>{beam.condition || common.emptyValue}</dd>
+                  <dd>{formatBeamCondition(beam.condition, common.emptyValue)}</dd>
                 </div>
                 <div>
                   <dt>{t.location}</dt>
@@ -131,10 +151,27 @@ const MyListingsPage = () => {
                 </div>
               </dl>
 
-              <div className={styles.cardActions}>
-                <Link to={`/beams/all/${beam.id}`}>
-                  <Button variant="ghost">{t.view}</Button>
+              <div className={styles.cardToolbar}>
+                <Link
+                  to={`/beams/${beam.id}/edit`}
+                  className={`${styles.actionBtn} ${styles.actionBtnPrimary}`}
+                >
+                  {t.edit}
                 </Link>
+                <button
+                  type="button"
+                  className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
+                  disabled={deletingId === beam.id}
+                  onClick={() => handleDelete(beam)}
+                >
+                  {deletingId === beam.id ? t.loading : t.delete}
+                </button>
+                <Link to={`/beams/all/${beam.id}`} className={styles.actionBtn}>
+                  {t.view}
+                </Link>
+              </div>
+
+              <div className={styles.cardFooter}>
                 <button
                   type="button"
                   className={`${styles.certificateButton} ${
@@ -153,6 +190,7 @@ const MyListingsPage = () => {
                 </button>
                 <Button
                   variant="secondary"
+                  fullWidth
                   onClick={() =>
                     addToCart({
                       id: beam.id,

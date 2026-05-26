@@ -1,6 +1,30 @@
 const { pool } = require("../db");
 const { httpError } = require("../utils/httpError");
 
+const publicApiBase = String(process.env.PUBLIC_API_URL || "").replace(/\/$/, "");
+
+const resolvePublicUrl = (value) => {
+  if (value == null || typeof value !== "string") {
+    return value;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return trimmed;
+  }
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  if (!publicApiBase) {
+    return trimmed;
+  }
+
+  const path = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+  return `${publicApiBase}${path}`;
+};
+
 const beamSelectColumns = `
   c.id AS construction_id,
   c.user_id,
@@ -87,12 +111,12 @@ const toMergedBeam = (row) => ({
   condition: row.condition,
   defects: row.defects,
   usage_history: row.usage_history,
-  drawings: row.drawings,
-  certificate_src: row.certificate_src,
+  drawings: resolvePublicUrl(row.drawings),
+  certificate_src: resolvePublicUrl(row.certificate_src),
   quantity: row.quantity,
   location: row.location,
   price_eur: row.price_eur,
-  image_src: row.image_src
+  image_src: resolvePublicUrl(row.image_src)
 });
 
 const isAdmin = (user) => user.role === "admin";

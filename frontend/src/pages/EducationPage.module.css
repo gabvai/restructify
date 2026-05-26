@@ -236,7 +236,7 @@
 
 .conditionGuess :global(.edu-image-choice-card .edu-image-wrap) {
   margin-bottom: 0;
-  min-height: 320px;
+  min-height: 107px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -245,10 +245,10 @@
 
 .conditionGuess :global(.edu-image-choice-card .edu-image-wrap img) {
   display: block;
-  width: 100%;
-  max-width: 100%;
-  max-height: 420px;
-  margin: 0;
+  width: auto;
+  max-width: 33%;
+  max-height: 140px;
+  margin: 0 auto;
   object-fit: contain;
 }
 
@@ -258,11 +258,34 @@
   align-content: start;
 }
 
+.plainChecklist {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .plainChecklist :global(.edu-card) {
   background: transparent;
   border: 0;
   box-shadow: none;
   padding: 0;
+  width: 100%;
+  max-width: 560px;
+  text-align: center;
+}
+
+.plainChecklist :global(.edu-card h2) {
+  text-align: center;
+}
+
+.plainChecklist :global(.edu-checklist) {
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.plainChecklist :global(.edu-checklist li) {
+  justify-content: center;
 }
 
 .plainChecklist :global(.edu-card:hover) {
@@ -580,10 +603,11 @@
   }
 
   .conditionGuess :global(.edu-image-choice-card .edu-image-wrap) {
-    min-height: 240px;
+    min-height: 80px;
   }
 
   .conditionGuess :global(.edu-image-choice-card .edu-image-wrap img) {
-    max-height: 320px;
+    max-width: 50%;
+    max-height: 107px;
   }
 }

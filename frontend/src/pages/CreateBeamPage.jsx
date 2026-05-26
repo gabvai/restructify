@@ -1,32 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Button from "../components/Button.jsx";
 import ConstructionTypeSelector from "../components/ConstructionTypeSelector.jsx";
 import FormField from "../components/FormField.jsx";
-import { API_BASE_URL } from "../api/client.js";
-import { createBeamRequest } from "../api/beams.js";
+import { createBeamRequest, getBeamRequest, updateBeamRequest } from "../api/beams.js";
 import { uploadDrawingPdfRequest, uploadListingPhotoRequest } from "../api/uploads.js";
 import { translations } from "../i18n/translations.js";
+import { BEAM_CONDITION_OPTIONS, normalizeBeamCondition } from "../utils/beamCondition.js";
+import { toAbsoluteMediaUrl } from "../utils/mediaUrl.js";
 import styles from "./CreateBeamPage.module.css";
 
-const publicFileUrl = (stored) => {
-  if (!stored || typeof stored !== "string") {
-    return "";
-  }
-  const s = stored.trim();
-  if (!s) {
-    return "";
-  }
-  if (s.startsWith("http://") || s.startsWith("https://")) {
-    return s;
-  }
-  const base = API_BASE_URL.replace(/\/$/, "");
-  const path = s.startsWith("/") ? s : `/${s}`;
-  return `${base}${path}`;
-};
-
 const t = translations.createBeam;
+const editT = translations.editBeam;
 
 const stepDefinitions = [
   {
@@ -110,8 +96,43 @@ const normalizePayload = (form) => {
 
 const LAST_STEP_INDEX = 3;
 
+const numberFields = [
+  "length_mm",
+  "weight_kg",
+  "height_mm",
+  "width_mm",
+  "web_thickness_mm",
+  "flange_thickness_mm",
+  "quantity",
+  "price_eur"
+];
+
+const beamToForm = (beam) => {
+  const form = buildInitialState();
+
+  Object.keys(form).forEach((key) => {
+    const value = beam[key];
+    if (value === null || value === undefined) {
+      return;
+    }
+    if (numberFields.includes(key)) {
+      form[key] = String(value);
+      return;
+    }
+    if (key === "condition") {
+      form[key] = normalizeBeamCondition(value);
+      return;
+    }
+    form[key] = String(value);
+  });
+
+  return form;
+};
+
 const CreateBeamPage = () => {
   const navigate = useNavigate();
+  const { id: beamId } = useParams();
+  const isEditing = Boolean(beamId);
   const drawingFileRef = useRef(null);
   const certificateFileRef = useRef(null);
   const listingPhotoRef = useRef(null);
@@ -128,10 +149,45 @@ const CreateBeamPage = () => {
   const [photoUploadError, setPhotoUploadError] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [fieldErrors, setFieldErrors] = useState({});
+  const [loadingBeam, setLoadingBeam] = useState(isEditing);
 
   useEffect(() => {
     stepRef.current = currentStep;
   }, [currentStep]);
+
+  useEffect(() => {
+    if (!isEditing) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadBeam = async () => {
+      setLoadingBeam(true);
+      setError(null);
+
+      try {
+        const beam = await getBeamRequest(beamId);
+        if (!cancelled) {
+          setForm(beamToForm(beam));
+        }
+      } catch (requestError) {
+        if (!cancelled) {
+          setError(requestError.message || t.loadError);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingBeam(false);
+        }
+      }
+    };
+
+    loadBeam();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [beamId, isEditing]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -327,22 +383,29 @@ const CreateBeamPage = () => {
 
     try {
       const payload = normalizePayload(form);
-      await createBeamRequest(payload);
-      setSuccess(t.success);
-      setForm(buildInitialState());
-      setCurrentStep(0);
-      setFieldErrors({});
-      if (drawingFileRef.current) {
-        drawingFileRef.current.value = "";
-      }
-      if (certificateFileRef.current) {
-        certificateFileRef.current.value = "";
-      }
-      if (listingPhotoRef.current) {
-        listingPhotoRef.current.value = "";
-      }
 
-      setTimeout(() => navigate("/beams/all"), 700);
+      if (isEditing) {
+        await updateBeamRequest(beamId, payload);
+        setSuccess(editT.success);
+        setTimeout(() => navigate("/beams"), 700);
+      } else {
+        await createBeamRequest(payload);
+        setSuccess(t.success);
+        setForm(buildInitialState());
+        setCurrentStep(0);
+        setFieldErrors({});
+        if (drawingFileRef.current) {
+          drawingFileRef.current.value = "";
+        }
+        if (certificateFileRef.current) {
+          certificateFileRef.current.value = "";
+        }
+        if (listingPhotoRef.current) {
+          listingPhotoRef.current.value = "";
+        }
+
+        setTimeout(() => navigate("/beams/all"), 700);
+      }
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -350,10 +413,18 @@ const CreateBeamPage = () => {
     }
   };
 
+  if (loadingBeam) {
+    return (
+      <section className={styles.page}>
+        <div className={styles.state}>{editT.loading}</div>
+      </section>
+    );
+  }
+
   return (
     <section className={styles.page}>
-      <h1>{t.title}</h1>
-      <p className="muted">{t.subtitle}</p>
+      <h1>{isEditing ? editT.title : t.title}</h1>
+      <p className="muted">{isEditing ? editT.subtitle : t.subtitle}</p>
 
       <form className={styles.formCard} onKeyDown={handleFormKeyDown} noValidate>
         <div className={styles.stepper}>
@@ -441,13 +512,20 @@ const CreateBeamPage = () => {
               </FormField>
 
               <FormField htmlFor="condition" label="Būklė">
-                <input
+                <select
                   id="condition"
                   name="condition"
                   value={form.condition}
                   onChange={handleChange}
                   className={styles.input}
-                />
+                >
+                  <option value="">Pasirinkite būklę</option>
+                  {BEAM_CONDITION_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
                 {renderError("condition")}
               </FormField>
 
@@ -619,7 +697,7 @@ const CreateBeamPage = () => {
                   {form.image_src ? (
                     <div className={styles.photoPreviewBlock}>
                       <img
-                        src={publicFileUrl(form.image_src)}
+                        src={toAbsoluteMediaUrl(form.image_src)}
                         alt="Skelbimo nuotrauka"
                         className={styles.photoPreview}
                       />
@@ -681,7 +759,7 @@ const CreateBeamPage = () => {
                 {form.drawings ? (
                   <div className={styles.uploadMeta}>
                     <a
-                      href={publicFileUrl(form.drawings)}
+                      href={toAbsoluteMediaUrl(form.drawings)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.uploadLink}
@@ -735,7 +813,7 @@ const CreateBeamPage = () => {
                 {form.certificate_src ? (
                   <div className={styles.uploadMeta}>
                     <a
-                      href={publicFileUrl(form.certificate_src)}
+                      href={toAbsoluteMediaUrl(form.certificate_src)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.uploadLink}
@@ -784,7 +862,7 @@ const CreateBeamPage = () => {
             </Button>
           ) : (
             <Button type="button" onClick={handlePublish} disabled={submitting}>
-              {submitting ? t.saving : "Paskelbti skelbimą"}
+              {submitting ? t.saving : isEditing ? editT.submit : "Paskelbti skelbimą"}
             </Button>
           )}
         </div>

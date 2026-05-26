@@ -1,23 +1,5 @@
-import { API_BASE_URL, apiClient } from "./client.js";
-
-const toAbsoluteMediaUrl = (value) => {
-  if (typeof value !== "string") {
-    return value;
-  }
-
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return trimmed;
-  }
-
-  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-    return trimmed;
-  }
-
-  const base = API_BASE_URL.replace(/\/$/, "");
-  const path = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
-  return `${base}${path}`;
-};
+import { apiClient } from "./client.js";
+import { toAbsoluteMediaUrl } from "../utils/mediaUrl.js";
 
 const normalizeBeam = (beam) => {
   if (!beam || typeof beam !== "object") {
@@ -62,4 +44,22 @@ export const createBeamRequest = async (beamPayload) => {
 export const getBeamPublicRequest = async (beamId) => {
   const response = await apiClient.get(`/beams/all/${beamId}`);
   return normalizeBeam(response.data);
+};
+
+export const getBeamRequest = async (beamId) => {
+  const response = await apiClient.get(`/beams/${beamId}`);
+  return normalizeBeam(response.data);
+};
+
+export const updateBeamRequest = async (beamId, beamPayload) => {
+  const response = await apiClient.put(`/beams/${beamId}`, {
+    type: "beam",
+    ...beamPayload
+  });
+
+  return normalizeBeam(response.data);
+};
+
+export const deleteBeamRequest = async (beamId) => {
+  await apiClient.delete(`/beams/${beamId}`);
 };

@@ -39,6 +39,7 @@ export const translations = {
     title: "Pridėti konstrukciją",
     subtitle: "Užpildykite parduodamos konstrukcijos duomenis.",
     success: "Sija sėkmingai sukurta.",
+    loadError: "Nepavyko įkelti skelbimo.",
     cancel: "Atšaukti",
     saving: "Saugoma...",
     submit: "Pridėti konstrukciją",
@@ -81,7 +82,18 @@ export const translations = {
     addToCart: "Pridėti į krepšelį",
     view: "Peržiūrėti",
     withCertificate: "Su sertifikatu",
-    withoutCertificate: "Be sertifikato"
+    withoutCertificate: "Be sertifikato",
+    edit: "Redaguoti",
+    delete: "Ištrinti",
+    deleteConfirm: "Ar tikrai norite ištrinti šį skelbimą?",
+    deleteError: "Nepavyko ištrinti skelbimo."
+  },
+  editBeam: {
+    title: "Redaguoti skelbimą",
+    subtitle: "Atnaujinkite skelbimo duomenis.",
+    success: "Skelbimas sėkmingai atnaujintas.",
+    submit: "Išsaugoti pakeitimus",
+    loading: "Kraunama..."
   },
   allListings: {
     title: "Visi skelbimai",
