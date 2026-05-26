@@ -10,7 +10,7 @@ const TABS = [
   { id: "description", label: "Aprasymas" },
   { id: "defects", label: "Defektai" },
   { id: "usage_history", label: "Naudojimo istorija" },
-  { id: "docs", label: "Breziniai ir dokumentai" }
+  { id: "docs", label: "Brėžiniai ir dokumentai" }
 ];
 
 const formatValue = (value, suffix = "") => {
@@ -89,14 +89,14 @@ const BeamDetailsPage = () => {
       <div className={styles.docsList}>
         {beam.drawings ? (
           <a href={beam.drawings} target="_blank" rel="noopener noreferrer">
-            Atidaryti brezinio faila (PDF)
+            Atidaryti brėžinių failą (PDF)
           </a>
         ) : (
-          <span>Breziniai: -</span>
+          <span>Brėžiniai: -</span>
         )}
         {beam.certificate_src ? (
           <a href={beam.certificate_src} target="_blank" rel="noopener noreferrer">
-            Atidaryti sertifikata (PDF)
+            Atidaryti sertifikatą (PDF)
           </a>
         ) : (
           <span>Sertifikatas: -</span>
@@ -205,7 +205,7 @@ const BeamDetailsPage = () => {
             </div>
           </div>
           <Link to={`/beams/seller/${beam.user_id}`} className={styles.sellerListingsLink}>
-            Perziureti visus skelbimus
+            Peržiūrėti visus skelbimus
           </Link>
           <div className={styles.sellerContact}>
             <h4>Susisiekimas su pardaveju</h4>

@@ -5,15 +5,18 @@ const crypto = require("crypto");
 const multer = require("multer");
 
 const { httpError } = require("../utils/httpError");
+const { isSupabaseStorageEnabled } = require("../services/supabaseStorage");
 
 const uploadsRoot = path.join(__dirname, "..", "uploads");
 const drawingsDir = path.join(uploadsRoot, "drawings");
 
-fs.mkdirSync(drawingsDir, { recursive: true });
+if (!isSupabaseStorageEnabled()) {
+  fs.mkdirSync(drawingsDir, { recursive: true });
+}
 
 const maxBytes = Number(process.env.UPLOAD_MAX_BYTES || 10 * 1024 * 1024);
 
-const storage = multer.diskStorage({
+const diskStorage = multer.diskStorage({
   destination: (_req, _file, cb) => {
     cb(null, drawingsDir);
   },
@@ -24,6 +27,8 @@ const storage = multer.diskStorage({
     cb(null, `${base}${suffix}`);
   }
 });
+
+const storage = isSupabaseStorageEnabled() ? multer.memoryStorage() : diskStorage;
 
 const drawingUpload = multer({
   storage,

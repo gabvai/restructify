@@ -1,12 +1,22 @@
 const { httpError } = require("../utils/httpError");
+const {
+  isSupabaseStorageEnabled,
+  uploadListingImage,
+  uploadDrawingPdf
+} = require("../services/supabaseStorage");
 
-const uploadDrawingHandler = (req, res, next) => {
+const uploadDrawingHandler = async (req, res, next) => {
   try {
     if (!req.file) {
       throw httpError(400, "Neperduotas failas.");
     }
 
-    const url = `/uploads/drawings/${req.file.filename}`;
+    let url;
+    if (isSupabaseStorageEnabled()) {
+      url = await uploadDrawingPdf(req.file);
+    } else {
+      url = `/uploads/drawings/${req.file.filename}`;
+    }
 
     res.status(201).json({
       status: "success",
@@ -17,13 +27,18 @@ const uploadDrawingHandler = (req, res, next) => {
   }
 };
 
-const uploadListingPhotoHandler = (req, res, next) => {
+const uploadListingPhotoHandler = async (req, res, next) => {
   try {
     if (!req.file) {
       throw httpError(400, "Neperduotas failas.");
     }
 
-    const url = `/uploads/listing-images/${req.file.filename}`;
+    let url;
+    if (isSupabaseStorageEnabled()) {
+      url = await uploadListingImage(req.file);
+    } else {
+      url = `/uploads/listing-images/${req.file.filename}`;
+    }
 
     res.status(201).json({
       status: "success",
