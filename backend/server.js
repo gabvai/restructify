@@ -13,6 +13,7 @@ const constructionReviewRoutes = require("./routes/constructionReviewRoutes");
 const { notFound } = require("./middleware/notFound");
 const { errorHandler } = require("./middleware/errorHandler");
 const { testDbConnection } = require("./db");
+const aiRoutes = require("./routes/aiRoutes");
 
 const app = express();
 const port = Number(process.env.PORT || 4000);
@@ -33,7 +34,7 @@ app.use("/auth", authRoutes);
 app.use("/api/uploads", uploadRoutes);
 app.use("/beams", beamRoutes);
 app.use("/constructions", constructionReviewRoutes);
-
+app.use("/ai", aiRoutes);
 app.use(notFound);
 app.use(errorHandler);
 

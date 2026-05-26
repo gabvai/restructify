@@ -1,4 +1,21 @@
+# Node
 node_modules/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Environment files
 .env
-uploads/
+
+# Logs
 npm-debug.log*
+
+# AI generated/training outputs
+runs/
+outputs/
+uploads/
+
+# Optional large model files
+*.pt

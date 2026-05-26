@@ -7,6 +7,7 @@ export const translations = {
     allListings: "Visi skelbimai",
     myListings: "Mano skelbimai",
     inspections: "Konstrukcijų patikrinimai",
+    aiAnalyze: "AI analizė",
     cart: "Krepšelis",
     logOut: "Atsijungti"
   },
@@ -118,11 +119,36 @@ export const translations = {
     totalLabel: "Bendra suma",
     orderButton: "Rašyti laišką dėl patikrinimo",
     empty: "Neturite konstrukcijų be sertifikato.",
-    success: "Laiško užklausa paruošta. Susisieksime dėl patikrinimo laiko.",
+    selectHint: "Pasirinkite vieną ar kelias konstrukcijas (spustelėkite korteles).",
+    noSelection: "Pasirinkite bent vieną konstrukciją.",
+    emailModal: {
+      title: "Laiško šablonas",
+      recipientLabel: "Siųsti adresu",
+      bodyLabel: "Laiško tekstas",
+      copyBody: "Kopijuoti laišką",
+      copyEmail: "Kopijuoti adresą",
+      copied: "Nukopijuota!",
+      close: "Uždaryti"
+    },
     locations: [
-      { id: "vilnius", name: "Vilnius - UAB Statinių auditai", price: 50 },
-      { id: "kaunas", name: "Kaunas - UAB Konstrukcijų ekspertai", price: 50 },
-      { id: "klaipeda", name: "Klaipėda - UAB Inžineriniai tyrimai", price: 50 }
+      {
+        id: "vilnius",
+        name: "Vilnius - UAB Statinių auditai",
+        price: 50,
+        email: "info@statiniu-auditai.lt"
+      },
+      {
+        id: "kaunas",
+        name: "Kaunas - UAB Konstrukcijų ekspertai",
+        price: 50,
+        email: "info@konstrukciju-ekspertai.lt"
+      },
+      {
+        id: "klaipeda",
+        name: "Klaipėda - UAB Inžineriniai tyrimai",
+        price: 50,
+        email: "info@inzineriniai-tyrimai.lt"
+      }
     ]
   },
   cart: {

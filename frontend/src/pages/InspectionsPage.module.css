@@ -111,11 +111,98 @@
   color: var(--color-danger);
 }
 
-.success {
+.selectHint {
+  margin: 0 0 10px;
   font-size: 13px;
-  color: var(--color-success);
-  background: #ecfdf5;
-  border: 1px solid #a7f3d0;
-  padding: 10px 12px;
+  color: var(--color-text-muted);
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.modal {
+  width: min(560px, 100%);
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.18);
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 20px;
+}
+
+.fieldLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.recipientBlock {
+  padding: 12px;
+  border: 1px solid #d9e2d8;
   border-radius: var(--radius-sm);
+  background: #f8fbf8;
+}
+
+.recipientRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.recipientEmail {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f3d2e;
+  word-break: break-all;
+}
+
+.bodyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bodyHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.emailTextarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 220px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  background: #fafafa;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
 }

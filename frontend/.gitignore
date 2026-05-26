@@ -1,5 +1,21 @@
-node_modules
-dist
+# Node
+node_modules/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Environment files
 .env
-.env.local
-*.log
+backend/.env
+frontend/.env
+ai-service/.env
+
+# AI outputs
+runs/
+outputs/
+uploads/
+
+# AI model weights
+*.pt

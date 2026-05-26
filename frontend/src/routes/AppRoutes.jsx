@@ -11,6 +11,7 @@ import LoginPage from "../pages/LoginPage.jsx";
 import MyListingsPage from "../pages/MyListingsPage.jsx";
 import RegisterPage from "../pages/RegisterPage.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
+import AiAnalyzePage from "../pages/AiAnalyzePage.jsx";
 
 const AppRoutes = () => {
   return (
@@ -34,6 +35,7 @@ const AppRoutes = () => {
         <Route path="/beams" element={<MyListingsPage />} />
         <Route path="/beams/new" element={<CreateBeamPage />} />
         <Route path="/beams/:id/edit" element={<CreateBeamPage />} />
+        <Route path="/ai/analyze" element={<AiAnalyzePage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

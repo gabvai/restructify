@@ -13,7 +13,8 @@ const navItems = [
   { to: "/beams/all", label: t.allListings },
   { to: "/inspections", label: t.inspections, end: true },
   { to: "/beams/new", label: t.createBeam, end: true },
-  { to: "/beams", label: t.myListings, end: true }
+  { to: "/beams", label: t.myListings, end: true },
+  { to: "/ai/analyze", label: t.aiAnalyze, end: true }
 ];
 
 const Navbar = () => {
