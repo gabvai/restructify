@@ -1,0 +1,341 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.header h1 {
+  margin: 0 0 8px;
+  color: #0f3d2e;
+}
+
+.header p {
+  margin: 0;
+  color: #6b7280;
+  max-width: 760px;
+  line-height: 1.55;
+}
+
+.debugLink {
+  color: #0f3d2e;
+  text-decoration: none;
+  border: 1px solid #cfd8cf;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  background: #ffffff;
+}
+
+.panel,
+.resultCard,
+.summaryCard {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.05);
+}
+
+.fileInput {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+}
+
+.hint {
+  margin: 10px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.error {
+  color: #b91c1c;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.summaryGrid,
+.scoreGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.metric {
+  border: 1px solid #edf0ed;
+  background: #f8faf8;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.metric span {
+  display: block;
+  color: #6b7280;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.metric strong {
+  font-size: 24px;
+  color: #0f3d2e;
+}
+
+.results {
+  display: grid;
+  gap: 18px;
+}
+
+.resultHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.resultHeader h3 {
+  margin: 0;
+}
+
+.grade {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 36px;
+  border-radius: 999px;
+  background: #0f3d2e;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: minmax(180px, 340px) minmax(0, 1fr);
+  gap: 18px;
+  margin-top: 14px;
+  align-items: start;
+}
+
+.debugImageGrid {
+  display: grid;
+  grid-template-columns: minmax(220px, 360px) minmax(280px, 1fr);
+  gap: 18px;
+  margin-top: 14px;
+  align-items: start;
+}
+
+.imageFrame {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.originalImage,
+.debugImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  object-fit: contain;
+  background: #f3f4f6;
+}
+
+.originalImage {
+  max-height: 360px;
+}
+
+.debugImage {
+  max-height: 520px;
+  max-width: 100%;
+}
+
+.emptyDebugImage {
+  border: 1px dashed #cbd5e1;
+  border-radius: 14px;
+  background: #f8fafc;
+  color: #64748b;
+  padding: 18px;
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  line-height: 1.5;
+}
+
+.details {
+  display: grid;
+  gap: 12px;
+}
+
+.reportText {
+  margin: 8px 0 0;
+  color: #4b5563;
+  line-height: 1.55;
+}
+
+.materialList {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.materialItem {
+  border: 1px solid #edf0ed;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fcfdfc;
+}
+
+.materialTitle {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.materialText {
+  margin: 8px 0 0;
+  color: #4b5563;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.warningList {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: #92400e;
+  font-size: 14px;
+}
+
+.controlsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.control label {
+  display: block;
+  color: #374151;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.control input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 9px 10px;
+}
+
+.debugJson {
+  white-space: pre-wrap;
+  background: #0f172a;
+  color: #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+  overflow-x: auto;
+  font-size: 12px;
+  max-height: 360px;
+}
+
+@media (max-width: 900px) {
+  .imageGrid,
+  .debugImageGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .originalImage,
+  .debugImage {
+    max-height: 420px;
+  }
+}
+
+
+/* v4 layout/debug fixes: prevent the debug JSON or image grid from making the page extremely wide. */
+.page,
+.panel,
+.resultCard,
+.summaryCard,
+.results,
+.details,
+.imageGrid,
+.debugImageGrid,
+.imageFrame {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.page {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.resultCard {
+  overflow: hidden;
+}
+
+.debugImageGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.imageFrame {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: #f8fafc;
+}
+
+.originalImage,
+.debugImage {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.debugImage {
+  max-height: min(72vh, 720px);
+}
+
+.debugJson {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 900px) {
+  .debugImageGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .debugImage {
+    max-height: 520px;
+  }
+}

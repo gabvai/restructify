@@ -1,0 +1,29 @@
+const express = require("express");
+
+const {
+  createBeamListing,
+  getBeams,
+  getAllBeams,
+  getSellerBeams,
+  getBeam,
+  getAnyBeam,
+  updateBeamListing,
+  deleteBeamListing
+} = require("../controllers/beamController");
+const { authenticate } = require("../middleware/authMiddleware");
+const { forbidRoles } = require("../middleware/roleMiddleware");
+
+const router = express.Router();
+
+router.use(authenticate);
+
+router.post("/", forbidRoles(["specialist"]), createBeamListing);
+router.get("/", getBeams);
+router.get("/all", getAllBeams);
+router.get("/seller/:userId", getSellerBeams);
+router.get("/all/:id", getAnyBeam);
+router.get("/:id", getBeam);
+router.put("/:id", forbidRoles(["specialist"]), updateBeamListing);
+router.delete("/:id", forbidRoles(["specialist"]), deleteBeamListing);
+
+module.exports = router;
